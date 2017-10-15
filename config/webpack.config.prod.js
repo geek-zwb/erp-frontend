@@ -11,6 +11,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -169,9 +170,15 @@ module.exports = {
 
           compact: true,
 
-          // antd 的按需加载
-          presets: ["es2015", "react", "stage-3"],
+          presets: [
+            ['env', {
+              "targets": {
+                "browsers": ["last 2 versions", "ie > 9"]
+              }
+            }]
+          ],
           plugins: [
+          // antd 的按需加载
             ["import", {"libraryName": "antd", "style": "css"}],
             "transform-runtime",
             "transform-decorators-legacy"
@@ -269,6 +276,10 @@ module.exports = {
         minifyURLs: true,
       },
     }),
+    // copy static or global
+    new CopyWebpackPlugin([
+      { from: 'config.js', to: 'config.js' },
+    ]),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
     // It is absolutely essential that NODE_ENV was set to production here.
