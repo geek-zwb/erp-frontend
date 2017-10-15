@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Tooltip } from 'antd';
+// import { Tooltip } from 'antd';
 
 // styled components
 const RightMenuBox = styled.div`
@@ -46,10 +46,6 @@ const MenuItem = MenuHeader.extend`
 
 @withRouter
 class RightMenu extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <RightMenuBox style={this.props.style}>
