@@ -16,12 +16,6 @@ const DashboardBox = styled.div`
   text-align: center;
   padding: 10px;
 `;
-const DashboardHeader = styled.div`
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-`;
 // 注意该keyframes 要在使用前定义
 const DashboardLogoSpin = keyframes`
   from { transform: rotate(0deg); }
@@ -32,9 +26,6 @@ const DashboardLogo = styled.img.attrs({
 })`
   animation: ${DashboardLogoSpin} infinite 20s linear;
   height: 80px;
-`;
-const DashboardIntro = styled.p`
-  font-size: large;
 `;
 
 /**
@@ -49,13 +40,7 @@ class Dashboard extends Component {
   render() {
     return (
       <DashboardBox>
-        <DashboardHeader>
-          <DashboardLogo/>
-          <h2>订单详情总览</h2>
-        </DashboardHeader>
-        <DashboardIntro>
           两秒后通过saga得到 dashboardTestRequest 后的数据 : <code>{this.props.$$testData}</code>
-        </DashboardIntro>
       </DashboardBox>
     );
   };

@@ -5,10 +5,14 @@ import {ConnectedRouter} from 'react-router-redux';
 import registerServiceWorker from './registerServiceWorker';
 import {history} from './redux/store';
 import store from './redux/store';
-import App from './App';
+
+// routes
+import Routes from './routes';
 
 // global styles
 import './styles/icon.css';
+
+console.log('store', store.getState().get('auth'));
 
 // ================================
 // 将根组件挂载到 DOM，启动！
@@ -16,7 +20,7 @@ import './styles/icon.css';
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <App/>
+      <Routes isAuthenticated={store.getState().getIn(['auth', 'isAuthenticated'])} />
     </ConnectedRouter>
   </Provider>, document.getElementById('root'));
 

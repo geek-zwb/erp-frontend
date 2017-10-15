@@ -6,41 +6,48 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import styled from 'styled-components';
-// import { Tooltip } from 'antd';
+import { Input } from 'antd';
+
+const Search = Input.Search;
 
 // styled components
 const RightMenuBox = styled.div`
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  position: relative;
+  justify-content: flex-end;
   align-items: center;
-  width: 90px;
-  margin-top: -15px;
 `;
-const MenuHeader = styled.div`
-  cursor: pointer;
-  flex: 0 0 56px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px;
+const MenuContent = styled.ul`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  margin-bottom: 15px;
-  span {
-    font-size: 22px;
-    color: #666;
+  & > li {
+    margin-right: 20px;
   }
 `;
-const MenuItem = MenuHeader.extend`
-  flex: 0 0 40px;
-  width: 40px;
-  opacity: 0;
-  ${RightMenuBox}:hover & {
-    transition: opacity 1s ease-in-out;
-    opacity: 1;
+const MenuUl = styled.ul`
+  position: absolute;
+  top: 30px;
+  padding-top: 30px;
+  right: 15px;
+  z-index: 2;
+  color: #fff;
+  display: none;
+  & li {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bbe;
+    line-height: 40px;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  & li a {
+    color: #fff;
+  }
+  .menu-ul:hover & {
+    display: block;
   }
 `;
 
@@ -49,22 +56,38 @@ class RightMenu extends Component {
   render() {
     return (
       <RightMenuBox style={this.props.style}>
-        <MenuHeader>
-          <span className="global-icon icon-youceyingyongheji"></span>
-        </MenuHeader>
-        <MenuItem>
-          <Link to="/notification">
-            {/*<Tooltip placement="right" title="消息" >
-             <span className="global-icon icon-xiaoxi"></span>
-             </Tooltip>*/}
-            <span className="global-icon icon-xiaoxi"></span>
-          </Link>
-        </MenuItem>
-        <MenuItem>
-          <Link to="/login">
-            <span className="global-icon icon-tuichu"></span>
-          </Link>
-        </MenuItem>
+        <MenuContent>
+          <li>
+            <Search
+              placeholder="input search text"
+              style={{width: 200, height: 30}}
+              onSearch={value => console.log(value)}
+            />
+          </li>
+          <li>
+            <Link to={'/notification'}>
+              <span className="global-icon icon-xiaoxi"></span>
+            </Link>
+          </li>
+          <li className="menu-ul">
+            <span>Admin</span>
+            <MenuUl>
+              <li>
+                <span className="global-icon icon-youceyingyongheji"></span>
+              </li>
+              <li>
+                <Link to="/notification">
+                  <span className="global-icon icon-xiaoxi"></span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/login">
+                  <span className="global-icon icon-tuichu"></span>
+                </Link>
+              </li>
+            </MenuUl>
+          </li>
+        </MenuContent>
       </RightMenuBox>
     );
   };

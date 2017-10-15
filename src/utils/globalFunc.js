@@ -6,12 +6,14 @@
 /**
  * 面包屑
  */
-export const getBreadInfo = (url) => {
+export const getBreadInfo = (url, systemSelected = '权限管理') => {
   const breadConfig = {
-    '/dashboard': ['Order', '总览'],
-    '/notification': ['Order', '通知'],
-    '/users': ['Order', '用户管理', '用户数据'],
-    '/orders': ['Order', '订单管理', '订单数据'],
+    '/system': ['权限管理', '选择系统'],
+    '/dashboard': [systemSelected, '总览'],
+    '/notification': [systemSelected, '通知'],
+    '/users': [systemSelected, '用户管理', '用户数据'],
+    '/roles': [systemSelected, '角色管理'],
+    '/permissions': [systemSelected, '权限管理'],
   };
   let breadInfo = breadConfig[Object.keys(breadConfig).find((item, index) => item === url)];
   if (url === '/') {
