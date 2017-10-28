@@ -6,6 +6,8 @@ import NoMatch from '../common/NoMatch';
 import Dashboard from '../modules/Dashboard';
 import Login from '../modules/Login';
 import Supplier from '../modules/Supplier';
+import Type from '../modules/Type';
+import Unit from '../modules/Unit';
 
 const routes = [
   {
@@ -27,16 +29,16 @@ const routes = [
     component: Supplier
   },
   {
-    path: '/users',
+    path: '/types',
     exact: true,
     auth: true,
-    component: NoMatch
+    component: Type
   },
   {
-    path: '/permissions',
+    path: '/units',
     exact: true,
     auth: true,
-    component: NoMatch
+    component: Unit
   },
   {
     path: '/login',

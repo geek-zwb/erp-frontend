@@ -9,6 +9,8 @@ import {fork, all} from 'redux-saga/effects';
 import {watchLoadDashboard} from '../../modules/Dashboard/sagas';
 import watchLogin from '../../modules/Login/sagas';
 import {watchGetSuppliers, watchUpdateSupplier, watchAddSupplier, watchDeleteSupplier} from '../../modules/Supplier/sagas';
+import {watchGetTypes, watchUpdateType, watchAddType, watchDeleteType} from '../../modules/Type/sagas';
+import {watchGetUnits, watchUpdateUnit, watchAddUnit, watchDeleteUnit} from '../../modules/Unit/sagas';
 
 // 单一进入点， 启动所有 saga
 export default function* root() {
@@ -20,5 +22,15 @@ export default function* root() {
     fork(watchUpdateSupplier),
     fork(watchAddSupplier),
     fork(watchDeleteSupplier),
+
+    fork(watchGetTypes),
+    fork(watchUpdateType),
+    fork(watchAddType),
+    fork(watchDeleteType),
+
+    fork(watchGetUnits),
+    fork(watchUpdateUnit),
+    fork(watchAddUnit),
+    fork(watchDeleteUnit),
   ])
 }

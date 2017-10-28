@@ -14,6 +14,21 @@ const {Sider} = Layout;
 
 @withRouter
 class SiderMenu extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: false,
+    };
+
+    this.toggle = this.toggle.bind(this);
+  }
+
+  toggle() {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+
   onSiderClick(e) {
     const {location, history} = this.props;
     if (location.pathname === e.key) return;
@@ -58,35 +73,46 @@ class SiderMenu extends Component {
     }
 
     return (
-      <Sider style={style} collapsible={true}>
+      <Sider
+        style={{background: '#f0f0f2', ...style}}
+        trigger={null}
+        collapsible={true}
+        collapsed={this.state.collapsed}
+      >
+        <div style={{height: '42px', lineHeight: '42px', textAlign: 'center'}}>
+          <h2 style={{color:'#0f83e6'}} onClick={this.toggle}>
+            <span style={{marginRight: '20px'}}>ENSUN ERP</span>
+            <Icon
+              className="trigger"
+              style={{display: this.state.collapsed ? 'none': 'inline-block'}}
+              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+            />
+          </h2>
+        </div>
         <Menu
           theme="light"
           mode="inline"
           defaultSelectedKeys={[defaultSelectedKeys]}
           selectedKeys={[defaultSelectedKeys]}
-          defaultOpenKeys={['ERP']}
+          // defaultOpenKeys={['ERP']}
           onClick={this.onSiderClick.bind(this)}
           style={{height: '100%', borderRight: 0, background: '#f2f2f4'}}
         >
-          <SubMenu
-            key="ERP"
-            style={{background: '#f2f2f4'}}
-            title={<span><Icon type="bars" /><span className="nav-text">ENSUN ERP</span></span>}
-          >
-            <Menu.Item key="/dashboard">
-              <Icon type="pie-chart" /><span>总览</span>
-            </Menu.Item>
-            <Menu.Item key="/products">产品管理</Menu.Item>
-            <Menu.Item key="/orders">订单管理</Menu.Item>
-            <Menu.Item key="/types">产品分类管理</Menu.Item>
-            <Menu.Item key="/units">产品计数单位管理</Menu.Item>
-            <Menu.Item key="/suppliers">供应商管理</Menu.Item>
-            <Menu.Item key="/purchases">订货管理</Menu.Item>
-            <Menu.Item key="/customers">
-              <Icon type="team" /><span>客户管理</span>
-            </Menu.Item>
-            <Menu.Item key="/warehouses">仓库管理</Menu.Item>
-          </SubMenu>
+          <Menu.Item key="/dashboard">
+            <Icon type="pie-chart"/><span>总览</span>
+          </Menu.Item>
+          <Menu.Item key="/products">
+            <Icon type="gift"/><span>产品管理</span>
+          </Menu.Item>
+          <Menu.Item key="/orders"><Icon type="book"/><span>订单管理</span></Menu.Item>
+          <Menu.Item key="/types"><Icon type="appstore-o"/><span>产品分类管理</span></Menu.Item>
+          <Menu.Item key="/units"><Icon type="api"/><span>产品计数单位管理</span></Menu.Item>
+          <Menu.Item key="/suppliers"><Icon type="contacts"/><span>供应商管理</span></Menu.Item>
+          <Menu.Item key="/purchases"><Icon type="shop"/><span>订货管理</span></Menu.Item>
+          <Menu.Item key="/customers">
+            <Icon type="team"/><span>客户管理</span>
+          </Menu.Item>
+          <Menu.Item key="/warehouses"><Icon type="database"/><span>仓库管理</span></Menu.Item>
         </Menu>
       </Sider>
     )

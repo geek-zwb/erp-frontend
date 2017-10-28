@@ -7,6 +7,8 @@
 import dashboardReducer from '../../modules/Dashboard/reducers';
 import authReducer from '../../modules/Login/reducers';
 import suppliersReducer from '../../modules/Supplier/reducers';
+import typesReducer from '../../modules/Type/reducers';
+import unitsReducer from '../../modules/Unit/reducers';
 
 /*const rootReducer = combineReducers({
   dashboardReducer
@@ -15,7 +17,9 @@ import suppliersReducer from '../../modules/Supplier/reducers';
 const reducers = {
   dashboardReducer,
   auth: authReducer,
-  suppliersReducer
+  suppliersReducer,
+  typesReducer,
+  unitsReducer,
 };
 
 export default reducers;
