@@ -6,14 +6,18 @@
 /**
  * 面包屑
  */
-export const getBreadInfo = (url, systemSelected = '权限管理') => {
+export const getBreadInfo = (url, systemSelected = 'ERP') => {
   const breadConfig = {
-    '/system': ['权限管理', '选择系统'],
     '/dashboard': [systemSelected, '总览'],
+    '/customers': [systemSelected, '客户管理', '用户数据'],
+    '/suppliers': [systemSelected, '供应商管理'],
+    '/products': [systemSelected, '产品管理'],
+    '/orders': [systemSelected, '订单管理'],
+    '/types': [systemSelected, '产品分类管理'],
+    '/units': [systemSelected, '产品计数单位管理'],
+    '/purchases': [systemSelected, '订货管理'],
+    '/warehouses': [systemSelected, '仓库管理'],
     '/notification': [systemSelected, '通知'],
-    '/users': [systemSelected, '用户管理', '用户数据'],
-    '/roles': [systemSelected, '角色管理'],
-    '/permissions': [systemSelected, '权限管理'],
   };
   let breadInfo = breadConfig[Object.keys(breadConfig).find((item, index) => item === url)];
   if (url === '/') {

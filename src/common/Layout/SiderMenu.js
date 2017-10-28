@@ -29,14 +29,29 @@ class SiderMenu extends Component {
       case['/', '/dashboard'].indexOf(location.pathname) !== -1:
         defaultSelectedKeys = '/dashboard';
         break;
-      case['/roles', '/rolesEdit'].indexOf(location.pathname) !== -1:
-        defaultSelectedKeys = '/roles';
+      case['/products'].indexOf(location.pathname) !== -1:
+        defaultSelectedKeys = '/products';
         break;
-      case['/users', '/usersEdit'].indexOf(location.pathname) !== -1:
-        defaultSelectedKeys = '/users';
+      case['/orders'].indexOf(location.pathname) !== -1:
+        defaultSelectedKeys = '/orders';
         break;
-      case['/permissions', '/permissionsEdit'].indexOf(location.pathname) !== -1:
-        defaultSelectedKeys = '/permissions';
+      case['/types'].indexOf(location.pathname) !== -1:
+        defaultSelectedKeys = '/types';
+        break;
+      case['/units'].indexOf(location.pathname) !== -1:
+        defaultSelectedKeys = '/units';
+        break;
+      case['/suppliers'].indexOf(location.pathname) !== -1:
+        defaultSelectedKeys = '/suppliers';
+        break;
+      case['/purchases'].indexOf(location.pathname) !== -1:
+        defaultSelectedKeys = '/purchases';
+        break;
+      case['/customers'].indexOf(location.pathname) !== -1:
+        defaultSelectedKeys = '/customers';
+        break;
+      case['/warehouses'].indexOf(location.pathname) !== -1:
+        defaultSelectedKeys = '/warehouses';
         break;
       default:
         defaultSelectedKeys = '/dashboard';
@@ -49,19 +64,24 @@ class SiderMenu extends Component {
           mode="inline"
           defaultSelectedKeys={[defaultSelectedKeys]}
           selectedKeys={[defaultSelectedKeys]}
-          defaultOpenKeys={['RBAC']}
+          defaultOpenKeys={['ERP']}
           onClick={this.onSiderClick.bind(this)}
           style={{height: '100%', borderRight: 0, background: '#f2f2f4'}}
         >
           <SubMenu
-            key="RBAC"
+            key="ERP"
             style={{background: '#f2f2f4'}}
             title={<span><Icon type="user"/><span className="nav-text">权限管理</span></span>}
           >
             <Menu.Item key="/dashboard">总览</Menu.Item>
-            <Menu.Item key="/users">用户管理</Menu.Item>
-            <Menu.Item key="/roles">角色管理</Menu.Item>
-            <Menu.Item key="/permissions">权限管理</Menu.Item>
+            <Menu.Item key="/products">产品管理</Menu.Item>
+            <Menu.Item key="/orders">订单管理</Menu.Item>
+            <Menu.Item key="/types">产品分类管理</Menu.Item>
+            <Menu.Item key="/units">产品计数单位管理</Menu.Item>
+            <Menu.Item key="/suppliers">供应商管理</Menu.Item>
+            <Menu.Item key="/purchases">订货管理</Menu.Item>
+            <Menu.Item key="/customers">客户管理</Menu.Item>
+            <Menu.Item key="/warehouses">仓库管理</Menu.Item>
           </SubMenu>
         </Menu>
       </Sider>

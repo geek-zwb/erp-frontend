@@ -8,11 +8,17 @@ import {fork, all} from 'redux-saga/effects';
 // 异步逻辑
 import {watchLoadDashboard} from '../../modules/Dashboard/sagas';
 import watchLogin from '../../modules/Login/sagas';
+import {watchGetSuppliers, watchUpdateSupplier, watchAddSupplier, watchDeleteSupplier} from '../../modules/Supplier/sagas';
 
 // 单一进入点， 启动所有 saga
 export default function* root() {
   yield all([
     fork(watchLoadDashboard),
-    fork(watchLogin)
+    fork(watchLogin),
+
+    fork(watchGetSuppliers),
+    fork(watchUpdateSupplier),
+    fork(watchAddSupplier),
+    fork(watchDeleteSupplier),
   ])
 }

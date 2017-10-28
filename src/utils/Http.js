@@ -27,15 +27,14 @@ export default class HTTPUtil {
     if (store.get('access_token')) {
       axios.defaults.headers.common.Authorization = `Bearer ${store.get('access_token')}`;
     }
-     // axios.defaults.headers.['Content-Type'] = 'application/x-www-form-urlencoded';
+    // axios.defaults.headers.['Content-Type'] = 'application/x-www-form-urlencoded';
   }
 
   static get(url, config) {
     HTTPUtil.setOptions();
     return axios.get(url, config)
       .then(function (response) {
-        console.log('response', response);
-        return response;
+        return response.data;
       })
       .catch(function (error) {
         return {
@@ -62,11 +61,29 @@ export default class HTTPUtil {
 
   static put(url, data, config) {
     HTTPUtil.setOptions();
-    return axios.put(url, data, config);
+    return axios.put(url, data, config)
+      .then(function (response) {
+        return response.data;
+      })
+      .catch(function (error) {
+        return {
+          status: 'error',
+          message: error
+        }
+      });
   }
 
   static delete(url, config) {
     HTTPUtil.setOptions();
-    return axios.delete(url, config);
+    return axios.delete(url, config)
+      .then(function (response) {
+        return response.data;
+      })
+      .catch(function (error) {
+        return {
+          status: 'error',
+          message: error
+        }
+      });
   }
 }

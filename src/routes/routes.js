@@ -2,9 +2,10 @@
  * @file
  * @author Created by geekzwb on 2017/10/13.
  */
+import NoMatch from '../common/NoMatch';
 import Dashboard from '../modules/Dashboard';
 import Login from '../modules/Login';
-import NoMatch from '../common/NoMatch';
+import Supplier from '../modules/Supplier';
 
 const routes = [
   {
@@ -20,10 +21,10 @@ const routes = [
     component: Dashboard
   },
   {
-    path: '/roles',
+    path: '/suppliers',
     exact: true,
     auth: true,
-    component: NoMatch
+    component: Supplier
   },
   {
     path: '/users',

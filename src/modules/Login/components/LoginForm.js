@@ -4,7 +4,6 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import styled from 'styled-components';
 
@@ -74,9 +73,6 @@ class LoginForm extends Component {
         <Button type="primary" htmlType="submit" className="login-form-button">
           Log in
         </Button>
-        <div>
-          Not a member yet? Click <Link to={'/resister'}>here</Link> to register.
-        </div>
       </Form>
     );
   };

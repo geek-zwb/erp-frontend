@@ -40,7 +40,7 @@ const LoginBox = styled.div`
   align-items: center;
 `;
 const LoginHeader = styled.header`
-  color: #242a30;
+  color: #0f83e6;
   font-size: 28px;
   font-weight: 300;
 `;
@@ -106,7 +106,7 @@ class Login extends Component {
         </LoginCover>
         <LoginBox>
           <LoginHeader>
-            权限管理
+            ENSUN ERP
           </LoginHeader>
           <LoginContent>
             <LoginForm login={this.login} message={this.props.message} />
