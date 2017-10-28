@@ -58,7 +58,7 @@ class SiderMenu extends Component {
     }
 
     return (
-      <Sider style={style}>
+      <Sider style={style} collapsible={true}>
         <Menu
           theme="light"
           mode="inline"
@@ -71,16 +71,20 @@ class SiderMenu extends Component {
           <SubMenu
             key="ERP"
             style={{background: '#f2f2f4'}}
-            title={<span><Icon type="user"/><span className="nav-text">权限管理</span></span>}
+            title={<span><Icon type="bars" /><span className="nav-text">ENSUN ERP</span></span>}
           >
-            <Menu.Item key="/dashboard">总览</Menu.Item>
+            <Menu.Item key="/dashboard">
+              <Icon type="pie-chart" /><span>总览</span>
+            </Menu.Item>
             <Menu.Item key="/products">产品管理</Menu.Item>
             <Menu.Item key="/orders">订单管理</Menu.Item>
             <Menu.Item key="/types">产品分类管理</Menu.Item>
             <Menu.Item key="/units">产品计数单位管理</Menu.Item>
             <Menu.Item key="/suppliers">供应商管理</Menu.Item>
             <Menu.Item key="/purchases">订货管理</Menu.Item>
-            <Menu.Item key="/customers">客户管理</Menu.Item>
+            <Menu.Item key="/customers">
+              <Icon type="team" /><span>客户管理</span>
+            </Menu.Item>
             <Menu.Item key="/warehouses">仓库管理</Menu.Item>
           </SubMenu>
         </Menu>
