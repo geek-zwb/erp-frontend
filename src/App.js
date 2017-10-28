@@ -2,15 +2,13 @@
 import React, { Component } from 'react';
 
 // route
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 // global func
 import { getBreadInfo } from './utils/globalFunc';
 
 // component
 import { Layout, Breadcrumb } from 'antd';
-import Dashboard from './modules/Dashboard';
-import NoMatch from './common/NoMatch';
 import SiderMenu from './common/Layout/SiderMenu';
 import RightMenu from './common/Layout/RightMenu'
 

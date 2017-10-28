@@ -7,25 +7,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { dashboardTestRequest } from './actions';
 
-import styled,{keyframes} from 'styled-components';
-
-import logo from './logo.svg';
+import styled from 'styled-components';
 
 //============ styled components
 const DashboardBox = styled.div`
   text-align: center;
   padding: 10px;
-`;
-// 注意该keyframes 要在使用前定义
-const DashboardLogoSpin = keyframes`
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-`;
-const DashboardLogo = styled.img.attrs({
-  src: logo
-})`
-  animation: ${DashboardLogoSpin} infinite 20s linear;
-  height: 80px;
 `;
 
 /**
