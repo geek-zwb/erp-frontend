@@ -86,12 +86,13 @@ class EditableTable extends Component {
 
   renderColumns(data, index, key, text) {
     const txt = text || '';
-    const {editable, status} = data[index][key];
+    const {editable, status, options} = data[index][key];
     if (typeof editable === 'undefined') {
       return txt;
     }
     return (
       <EditableCell
+        options={options}
         editable={editable}
         value={txt}
         onChange={value => this.handleChange(key, index, value)}

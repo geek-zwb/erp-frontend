@@ -8,6 +8,7 @@ import Login from '../modules/Login';
 import Supplier from '../modules/Supplier';
 import Type from '../modules/Type';
 import Unit from '../modules/Unit';
+import Warehouse from '../modules/Warehouse';
 
 const routes = [
   {
@@ -39,6 +40,12 @@ const routes = [
     exact: true,
     auth: true,
     component: Unit
+  },
+  {
+    path: '/warehouses',
+    exact: true,
+    auth: true,
+    component: Warehouse
   },
   {
     path: '/login',
