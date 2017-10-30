@@ -183,6 +183,7 @@ class EditableTable extends Component {
     return (
       <Table
         bordered
+        scroll={this.props.scroll}
         dataSource={dataSource}
         columns={columns}
         onChange={this.props.handleTableChange}

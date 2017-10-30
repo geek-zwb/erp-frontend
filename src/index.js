@@ -11,6 +11,7 @@ import Routes from './routes';
 
 // global styles
 import './styles/icon.css';
+import './styles/global.css';
 
 console.log('store', store.getState().get('auth'));
 

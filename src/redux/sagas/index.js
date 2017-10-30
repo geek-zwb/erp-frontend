@@ -12,6 +12,7 @@ import {watchGetSuppliers, watchUpdateSupplier, watchAddSupplier, watchDeleteSup
 import {watchGetTypes, watchUpdateType, watchAddType, watchDeleteType} from '../../modules/Type/sagas';
 import {watchGetUnits, watchUpdateUnit, watchAddUnit, watchDeleteUnit} from '../../modules/Unit/sagas';
 import {watchGetWarehouses, watchUpdateWarehouse, watchAddWarehouse, watchDeleteWarehouse} from '../../modules/Warehouse/sagas';
+import {watchGetPurchases, watchUpdatePurchase, watchAddPurchase, watchDeletePurchase} from '../../modules/Purchase/sagas';
 
 // 单一进入点， 启动所有 saga
 export default function* root() {
@@ -38,5 +39,10 @@ export default function* root() {
     fork(watchUpdateWarehouse),
     fork(watchAddWarehouse),
     fork(watchDeleteWarehouse),
+
+    fork(watchGetPurchases),
+    fork(watchUpdatePurchase),
+    fork(watchAddPurchase),
+    fork(watchDeletePurchase),
   ])
 }

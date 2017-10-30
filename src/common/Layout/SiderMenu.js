@@ -81,7 +81,7 @@ class SiderMenu extends Component {
       >
         <div style={{height: '42px', lineHeight: '42px', textAlign: 'center'}}>
           <h2 style={{color:'#0f83e6'}} onClick={this.toggle}>
-            <span style={{marginRight: '20px'}}>ENSUN ERP</span>
+            <span style={{marginRight: '20px',whiteSpace: 'nowrap'}}>ENSUN ERP</span>
             <Icon
               className="trigger"
               style={{display: this.state.collapsed ? 'none': 'inline-block'}}
