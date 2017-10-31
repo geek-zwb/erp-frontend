@@ -12,6 +12,7 @@ import Warehouse from '../modules/Warehouse';
 import Purchase from '../modules/Purchase';
 import Order from '../modules/Order';
 import Customer from '../modules/Customer';
+import Product from '../modules/Product';
 
 const routes = [
   {
@@ -67,6 +68,12 @@ const routes = [
     exact: true,
     auth: true,
     component: Customer
+  },
+  {
+    path: '/products',
+    exact: true,
+    auth: true,
+    component: Product
   },
   {
     path: '/login',

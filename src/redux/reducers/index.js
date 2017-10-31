@@ -13,6 +13,7 @@ import warehousesReducer from '../../modules/Warehouse/reducers';
 import purchasesReducer from '../../modules/Purchase/reducers';
 import ordersReducer from '../../modules/Order/reducers';
 import customersReducer from '../../modules/Customer/reducers';
+import productsReducer from '../../modules/Product/reducers';
 
 /*const rootReducer = combineReducers({
   dashboardReducer
@@ -28,6 +29,7 @@ const reducers = {
   purchasesReducer,
   ordersReducer,
   customersReducer,
+  productsReducer,
 };
 
 export default reducers;
