@@ -133,7 +133,7 @@ class Customer extends Component {
         },
         name: {
           editable: false,
-          value: $$customer.get('first_name') + ' ' + $$customer.get('last_name')
+          value: $$customer.get('name')
         },
         email: {
           editable: false,

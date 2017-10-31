@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Modal, Input, Button, Select, DatePicker, AutoComplete } from 'antd';
+import { Form, Modal, Input, Button, DatePicker, AutoComplete } from 'antd';
 import styled from 'styled-components';
 import moment from 'moment';
 import HTTPUtil from '../../../utils/Http';
@@ -30,7 +30,6 @@ const ProductItemBox = styled.div`
 
 //
 const FormItem = Form.Item;
-const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
 
 class CollectionCreateForm extends React.Component {
@@ -39,11 +38,13 @@ class CollectionCreateForm extends React.Component {
     this.cachePropducts = this.props.data.products;
     this.state = {
       autoCompleteResult: [],
+      customerSearchResult: [],
       products: this.props.data.products ? this.props.data.products : [],
       productCount: this.props.data.products ? this.props.data.products.length : 0
     };
 
     this.handleProductChange = this.handleProductChange.bind(this);
+    this.handleCustomerChange = this.handleCustomerChange.bind(this);
     this.handleAddProduct = this.handleAddProduct.bind(this);
     this.handleDeleteProduct = this.handleDeleteProduct.bind(this);
   }
@@ -84,9 +85,30 @@ class CollectionCreateForm extends React.Component {
     });
   }
 
+  /**
+   * 根据 id, name, email 查询到某个 customer
+   * @param value
+   */
+  handleCustomerChange(value) {
+    let customerSearchResult;
+    if (!value) {
+      customerSearchResult = [];
+    } else {
+      HTTPUtil.get(`customer/${value}`).then((res) => {
+        // 注意这里 this 指向
+        if (res.status === 'success') {
+          customerSearchResult = res.data;
+          this.setState({customerSearchResult});
+        }
+      }).catch(function (error) {
+        //
+        console.log('error', error);
+      });
+    }
+  };
 
   /**
-   * 根据 id
+   * 根据 id, name， sku
    * @param value
    */
   handleProductChange(value) {
@@ -108,9 +130,9 @@ class CollectionCreateForm extends React.Component {
   };
 
   render() {
-    const {title, visible, onCancel, onOk, confirmLoading, form, data, customers, message} = this.props;
+    const {title, visible, onCancel, onOk, confirmLoading, form, data, message} = this.props;
     const {getFieldDecorator} = form;
-    const {autoCompleteResult} = this.state;
+    const {autoCompleteResult, customerSearchResult} = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -123,22 +145,10 @@ class CollectionCreateForm extends React.Component {
       },
     };
 
-    const customerSelector = getFieldDecorator('customer_id', {
-      initialValue: data.customer_id,
-      rules: [{required: true, message: 'Please select the customer!'}],
-    })(
-      <Select>
-        {
-          customers.map((customer) => {
-            return (
-              <Option key={customer.id} value={customer.id}>
-                {customer.name}
-              </Option>
-            );
-          })
-        }
-      </Select>
-    );
+    const customerOptions = customerSearchResult.map((customer) => {
+      return <AutoCompleteOption key={customer.email} value={customer.email}>{customer.name + ' ' + customer.email}</AutoCompleteOption>;
+    });
+
 
     const productOptions = autoCompleteResult.map((product) => {
       return <AutoCompleteOption key={product.name}>{product.name}</AutoCompleteOption>;
@@ -150,7 +160,7 @@ class CollectionCreateForm extends React.Component {
           <h2>产品{index + 1} <Button type='danger' onClick={this.handleDeleteProduct.bind(index)}>delete</Button></h2>
           {getFieldDecorator(`products[${index}][name]`, {
             initialValue: product.name,
-            rules: [{required: true, message: 'Please input product!'}],
+            rules: [{required: true, message: 'Please select the product!'}],
           })(
             <AutoComplete
               dataSource={productOptions}
@@ -163,11 +173,11 @@ class CollectionCreateForm extends React.Component {
           {getFieldDecorator(`products[${index}][count]`, {
             initialValue: product.count,
             rules: [{required: true, message: 'Please input product count!'}],
-          })(<Input placeholder="* 购入该产品数量"/>)}
+          })(<Input placeholder="* 售出该产品数量"/>)}
           {getFieldDecorator(`products[${index}][price]`, {
             initialValue: product.price,
             rules: [{required: true, message: 'Please input product price of one!'}],
-          })(<Input placeholder="* 购入该产品单价"/>)}
+          })(<Input placeholder="* 售出该产品单价"/>)}
         </ProductItemBox>
       );
     });
@@ -181,54 +191,72 @@ class CollectionCreateForm extends React.Component {
         confirmLoading={confirmLoading}
       >
         <Form layout="vertical">
-          <FormItem {...formItemLayout} label="订货标识">
+          <FormItem {...formItemLayout} label="订单(发货)标识">
             {getFieldDecorator('name', {
               initialValue: data.name || `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}`,
-              rules: [{required: true, message: '请输入订货标识!'}],
+              rules: [{required: true, message: '请输入订单标识!'}],
             })(
               <Input />
             )}
             <Error>{message.name}</Error>
           </FormItem>
-          <FormItem {...formItemLayout} label="送货单号">
+          <FormItem {...formItemLayout} label="客户email(收货人唯一标识)">
+            {getFieldDecorator(`customer_email`, {
+              initialValue: data.customer && data.customer.email,
+              rules: [{required: true, message: 'Please input and select customer!'}],
+            })(
+              <AutoComplete
+                dataSource={customerOptions}
+                onChange={this.handleCustomerChange}
+                placeholder="* 输入客户id 或 email 或 name 查询并选择"
+              >
+                <Input />
+              </AutoComplete>
+            )}
+            <Error>{message.customer_email}</Error>
+          </FormItem>
+          <FormItem {...formItemLayout} label="订单编号(亚马逊等)">
+            {getFieldDecorator('order_code', {
+              initialValue: data.order_code,
+            })(
+              <Input />
+            )}
+            <Error>{message.order_code}</Error>
+          </FormItem>
+          <FormItem {...formItemLayout} label="订单状态">
+            {getFieldDecorator('status', {
+              initialValue: data.status || '已发货',
+              rules: [{required: true, message: 'Please input the order status!'}],
+            })(
+              <Input />
+            )}
+            <Error>{message.status}</Error>
+          </FormItem>
+          <FormItem  {...formItemLayout}
+                     label="发货日期"
+          >
+            {getFieldDecorator('delivery_date', {
+              initialValue: data.delivery_date && moment(data.delivery_date, 'YYYY-MM-DD'),
+            })(
+              <DatePicker />
+            )}
+            <Error>{message.delivery_date}</Error>
+          </FormItem>
+          <FormItem {...formItemLayout} label="快递单号">
             {getFieldDecorator('delivery_code', {
-              initialValue: data.delivery_code,
+              initialValue: data.delivery_code
             })(
               <Input />
             )}
             <Error>{message.delivery_code}</Error>
           </FormItem>
-          <FormItem  {...formItemLayout}
-                     label="发票日期"
-          >
-            {getFieldDecorator('invoice_date', {
-              initialValue: data.invoice_date && moment(data.invoice_date, 'YYYY-MM-DD'),
-            })(
-              <DatePicker />
-            )}
-            <Error>{message.invoice_date}</Error>
-          </FormItem>
-          <FormItem {...formItemLayout} label="发票单号">
-            {getFieldDecorator('invoice_code', {
-              initialValue: data.invoice_code
+          <FormItem {...formItemLayout} label="快递公司">
+            {getFieldDecorator('delivery_company', {
+              initialValue: data.delivery_company
             })(
               <Input />
             )}
-            <Error>{message.invoice_code}</Error>
-          </FormItem>
-          <FormItem {...formItemLayout} label="发票金额">
-            {getFieldDecorator('invoice_amount', {
-              initialValue: data.invoice_amount
-            })(
-              <Input />
-            )}
-            <Error>{message.invoice_amount}</Error>
-          </FormItem>
-          <FormItem {...formItemLayout} label="欠款金额">
-            {getFieldDecorator('arrears', {
-              initialValue: data.arrears || 0,
-            })(<Input />)}
-            <Error>{message.arrears}</Error>
+            <Error>{message.delivery_company}</Error>
           </FormItem>
           <FormItem {...formItemLayout} label="备注">
             {getFieldDecorator('note', {
@@ -236,11 +264,7 @@ class CollectionCreateForm extends React.Component {
             })(<Input.TextArea />)}
             <Error>{message.note}</Error>
           </FormItem>
-          <FormItem {...formItemLayout} label="供应商">
-            {customerSelector}
-            <Error>{message.customer}</Error>
-          </FormItem>
-          <FormItem {...formItemLayout} label="产品相关信息">
+          <FormItem {...formItemLayout} label="* 产品相关信息">
             {prodctItems}
             <div style={{marginTop: '10px'}}>
               <Button type='primary' onClick={this.handleAddProduct}>Add</Button>
@@ -260,7 +284,6 @@ class CollectionCreateForm extends React.Component {
 CollectionCreateForm.propTypes = {
   title: PropTypes.string.isRequired, // modal title
   data: PropTypes.object, // 表单初始数据
-  customers: PropTypes.array, // [{name: '供应商15', id:1, ...}]
   onOk: PropTypes.func.isRequired,  // 提交
   onCancel: PropTypes.func.isRequired,  // 取消
   message: PropTypes.oneOfType([  // 错误提示

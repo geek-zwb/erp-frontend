@@ -15,7 +15,7 @@ import EditableTable from '../../common/Table/EditableTable';
 import CollectionCreateForm from './components/CollectionCreateForm';
 
 // action creator
-import {getCustomers} from '../Customer/actions';
+import { getCustomers } from '../Customer/actions';
 import { getOrders, updateOrders, addOrder, deleteOrder } from './actions';
 
 
@@ -45,32 +45,72 @@ const columns = [
     dataIndex: 'id',
     width: 60,
     fixed: 'left'
-  },
-  {
-    title: '订货标识',
+  }, {
+    title: '订单(发货)标识',
     dataIndex: 'name',
+    width: 100
+  }, {
+    title: '订单号(amazu)',
+    dataIndex: 'order_code',
+    width: 100
   }, {
     title: '创建时间',
     dataIndex: 'created_at',
     width: 135,
   }, {
-    title: '供应商',
-    dataIndex: 'customer_id',
-    width: 150,
-  },{
-    title: '送货单号',
+    title: '客户信息',
+    children: [{
+      title: 'Id',
+      dataIndex: 'customer_id',
+      key: 'customer_id',
+      width: 50,
+    }, {
+      title: 'Name',
+      dataIndex: 'customer_name',
+      key: 'customer_name',
+      width: 100,
+    }, {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      width: 100,
+    }, {
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+      width: 100,
+    }, {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+      width: 100,
+    }],
+  }, {
+    title: '发货状态',
+    dataIndex: 'status',
+    width: 100,
+  }, {
+    title: '发货时间',
+    dataIndex: 'delivery_date',
+    width: 100,
+  }, {
+    title: '快递单号',
     dataIndex: 'delivery_code',
     width: 100,
   }, {
-    title: '欠款',
-    dataIndex: 'arrears',
+    title: '快递公司',
+    dataIndex: 'delivery_company',
     width: 100,
   }, {
-    title: '产品总数',
+    title: '共几种产品',
+    dataIndex: 'productsCount',
+    width: 100,
+  }, {
+    title: '产品总个数',
     dataIndex: 'count',
     width: 100,
   }, {
-    title: '花费',
+    title: '销售金额',
     dataIndex: 'totalCost',
     width: 100,
   },
@@ -78,6 +118,10 @@ const columns = [
     title: '更新时间',
     dataIndex: 'updated_at',
     width: 135,
+  },
+  {
+    title: '备注',
+    dataIndex: 'note',
   },
   {
     title: 'operation',
@@ -100,7 +144,6 @@ class Order extends Component {
       singleData: {},  // 新增或者修改某个 order
       currentIndex: '', // 当前修改项在 $$orders 中的 index
       modalType: 'add',
-      customers: this.props.$$customers.toJS()
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -118,9 +161,6 @@ class Order extends Component {
    * dispatch getOrders
    */
   componentDidMount() {
-    if(this.props.$$customers.isEmpty()) {
-      this.props.getCustomers();
-    }
     if (!this.props.status.includes('order_request')) {
       this.props.getOrders({page: this.props.pagination.current});
     }
@@ -135,7 +175,6 @@ class Order extends Component {
         visible,
         confirmLoading,
         $$orders: nextProps.$$orders,
-        customers: nextProps.$$customers.toJS(),
         count: nextProps.$$orders.size,
         pagination: nextProps.pagination,
       })
@@ -143,7 +182,6 @@ class Order extends Component {
       this.setState({
         confirmLoading,
         $$orders: nextProps.$$orders,
-        customers: nextProps.$$customers.toJS(),
         count: nextProps.$$orders.size,
         pagination: nextProps.pagination,
       })
@@ -155,12 +193,6 @@ class Order extends Component {
    * @param $$orders
    */
   initOrders($$orders) {
-    const customerOptions = this.props.$$customers.toJS().map((customer) => {
-      return {
-        key: customer.id,
-        value: customer.name,
-      };
-    });
     return $$orders.map(($$order, index) => {
       return {
         key: $$order.get('id', index),
@@ -172,23 +204,52 @@ class Order extends Component {
           value: $$order.get('name')
         },
         customer_id: {
+          value: $$order.getIn(['customer', 'id']),
+        },
+        customer_name: {
+          value: $$order.getIn(['customer', 'name']),
+        },
+        email: {
+          value: $$order.getIn(['customer', 'email']),
+        },
+        phone: {
+          value: $$order.getIn(['customer', 'phone']),
+        },
+        address: {
+          value: $$order.getIn(['customer', 'address']),
+        },
+        order_code: {
           editable: false,
-          value: $$order.get('customer_id'),
-          options:customerOptions
+          value: $$order.get('order_code')
+        },
+        status: {
+          editable: false,
+          value: $$order.get('status')
+        },
+        delivery_date: {
+          editable: false,
+          value: $$order.get('delivery_date')
         },
         delivery_code: {
           editable: false,
           value: $$order.get('delivery_code')
         },
-        arrears: {
+        delivery_company: {
           editable: false,
-          value: $$order.get('arrears')
+          value: $$order.get('delivery_company')
+        },
+        productsCount: {
+          value: $$order.get('productsCount')
         },
         count: {
           value: $$order.get('count')
         },
         totalCost: {
           value: $$order.get('totalCost')
+        },
+        note: {
+          editable: false,
+          value: $$order.get('note')
         },
         created_at: {
           value: $$order.get('created_at')
@@ -206,6 +267,7 @@ class Order extends Component {
    * @param dataChanged {Object[]} [{index, key, value}]
    */
   handleChange(datasChanged) {
+    console.log('datasChanged', datasChanged);
     let $$ordersUpdated = this.state.$$orders;
     let idex = '';
     datasChanged.forEach(function (data) {
@@ -240,7 +302,7 @@ class Order extends Component {
       form.resetFields();
       const values = {
         ...fieldsValue,
-        invoice_date: (fieldsValue['invoice_date'] && fieldsValue['invoice_date'].format('YYYY-MM-DD')) || '1000-01-01',
+        delivery_date: (fieldsValue['delivery_date'] && fieldsValue['delivery_date'].format('YYYY-MM-DD')) || '1000-01-01',
       };
       this.props.addOrder({lastPage: this.state.pagination.lastPage, ...values});
       this.setState({
@@ -262,13 +324,17 @@ class Order extends Component {
       form.resetFields();
       const values = {
         ...fieldsValue,
-        invoice_date: (fieldsValue['invoice_date'] && fieldsValue['invoice_date'].format('YYYY-MM-DD')) || '1000-01-01',
+        delivery_date: (fieldsValue['delivery_date'] && fieldsValue['delivery_date'].format('YYYY-MM-DD')) || '1000-01-01',
       };
       const order = this.state.$$orders.get(this.state.currentIndex).toJS();
 
-      const $$ordersUpdated = this.state.$$orders.set(this.state.currentIndex, fromJS({...order,...values}));
+      const $$ordersUpdated = this.state.$$orders.set(this.state.currentIndex, fromJS({...order, ...values}));
 
-      this.props.updateOrders({$$ordersUpdated, index: this.state.currentIndex, currentPage: this.props.pagination.current});
+      this.props.updateOrders({
+        $$ordersUpdated,
+        index: this.state.currentIndex,
+        currentPage: this.props.pagination.current
+      });
       this.setState({
         singleData: values,
         confirmLoading: true,
@@ -286,7 +352,7 @@ class Order extends Component {
   showModal() {
     this.setState({
       visible: true,
-      title: '新增订货单',
+      title: '新增订单（发货）',
       singleData: {},
       modalType: 'add'
     });
@@ -318,7 +384,7 @@ class Order extends Component {
   editMore(index) {
     this.setState({
       visible: true,
-      title: '修改订货单',
+      title: '修改订单（发货）信息',
       singleData: this.getSingleData(index, this.state.$$orders),
       currentIndex: index, // 当前修改项
       modalType: 'edit'
@@ -359,7 +425,7 @@ class Order extends Component {
             customers={this.state.customers}
           />
           <EditableTable
-            scroll={{ x: '125%', y: '100%' }}
+            scroll={{x: '200%', y: '100%'}}
             pagination={pagination}
             editMore={this.editMore}
             columns={columns}
@@ -377,20 +443,17 @@ class Order extends Component {
 
 Order.propTypes = {
   $$orders: PropTypes.object.isRequired,
-  $$customers: PropTypes.object.isRequired,
   pagination: PropTypes.object.isRequired,
   message: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
   ]),
   status: PropTypes.string,
-  getCustomers: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     $$orders: state.getIn(['ordersReducer', 'orders', 'data']),
-    $$customers: state.getIn(['customersReducer', 'customers']),
     pagination: {
       total: state.getIn(['ordersReducer', 'orders', 'total']),
       current: state.getIn(['ordersReducer', 'orders', 'current_page']),
@@ -418,10 +481,7 @@ function mapDispatchToProps(dispatch) {
     },
     deleteOrder: (payload) => {
       dispatch(deleteOrder(payload));
-    },
-    getCustomers: () => {
-      dispatch(getCustomers());
-    },
+    }
   };
 }
 
