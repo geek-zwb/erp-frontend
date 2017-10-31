@@ -1,5 +1,5 @@
 /**
- * Created by geekzwb on 2017/10/23.
+ * Created by geekzwb on 2017/10/30.
  * What for:
  */
 import React, { Component } from 'react';
@@ -15,11 +15,11 @@ import EditableTable from '../../common/Table/EditableTable';
 import CollectionCreateForm from './components/CollectionCreateForm';
 
 // action creator
-import {getSuppliers} from '../Supplier/actions'
-import { getPurchases, updatePurchases, addPurchase, deletePurchase } from './actions';
+import {getCustomers} from '../Customer/actions';
+import { getOrders, updateOrders, addOrder, deleteOrder } from './actions';
 
 
-const PurchasePage = styled.div`
+const OrderPage = styled.div`
   background: #fff;
   width: 100%;
   width: 100%;
@@ -55,7 +55,7 @@ const columns = [
     width: 135,
   }, {
     title: '供应商',
-    dataIndex: 'supplier_id',
+    dataIndex: 'customer_id',
     width: 150,
   },{
     title: '送货单号',
@@ -87,20 +87,20 @@ const columns = [
   }
 ];
 
-class Purchase extends Component {
+class Order extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      $$purchases: this.props.$$purchases || List(),
+      $$orders: this.props.$$orders || List(),
       count: 0,
       pagination: this.props.pagination,
       visible: false,
       title: '',
       confirmLoading: false,
-      singleData: {},  // 新增或者修改某个 purchase
-      currentIndex: '', // 当前修改项在 $$purchases 中的 index
+      singleData: {},  // 新增或者修改某个 order
+      currentIndex: '', // 当前修改项在 $$orders 中的 index
       modalType: 'add',
-      suppliers: this.props.$$suppliers.toJS()
+      customers: this.props.$$customers.toJS()
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -115,14 +115,14 @@ class Purchase extends Component {
   }
 
   /**
-   * dispatch getPurchases
+   * dispatch getOrders
    */
   componentDidMount() {
-    if(this.props.$$suppliers.isEmpty()) {
-      this.props.getSuppliers();
+    if(this.props.$$customers.isEmpty()) {
+      this.props.getCustomers();
     }
-    if (!this.props.status.includes('purchase_request')) {
-      this.props.getPurchases({page: this.props.pagination.current});
+    if (!this.props.status.includes('order_request')) {
+      this.props.getOrders({page: this.props.pagination.current});
     }
   }
 
@@ -134,17 +134,17 @@ class Purchase extends Component {
       this.setState({
         visible,
         confirmLoading,
-        $$purchases: nextProps.$$purchases,
-        suppliers: nextProps.$$suppliers.toJS(),
-        count: nextProps.$$purchases.size,
+        $$orders: nextProps.$$orders,
+        customers: nextProps.$$customers.toJS(),
+        count: nextProps.$$orders.size,
         pagination: nextProps.pagination,
       })
     } else {
       this.setState({
         confirmLoading,
-        $$purchases: nextProps.$$purchases,
-        suppliers: nextProps.$$suppliers.toJS(),
-        count: nextProps.$$purchases.size,
+        $$orders: nextProps.$$orders,
+        customers: nextProps.$$customers.toJS(),
+        count: nextProps.$$orders.size,
         pagination: nextProps.pagination,
       })
     }
@@ -152,49 +152,49 @@ class Purchase extends Component {
 
   /**
    * 返回 JSD， 表格需要的数据格式
-   * @param $$purchases
+   * @param $$orders
    */
-  initPurchases($$purchases) {
-    const supplierOptions = this.props.$$suppliers.toJS().map((supplier) => {
+  initOrders($$orders) {
+    const customerOptions = this.props.$$customers.toJS().map((customer) => {
       return {
-        key: supplier.id,
-        value: supplier.name,
+        key: customer.id,
+        value: customer.name,
       };
     });
-    return $$purchases.map(($$purchase, index) => {
+    return $$orders.map(($$order, index) => {
       return {
-        key: $$purchase.get('id', index),
+        key: $$order.get('id', index),
         id: {
-          value: $$purchase.get('id')
+          value: $$order.get('id')
         },
         name: {
           editable: false,
-          value: $$purchase.get('name')
+          value: $$order.get('name')
         },
-        supplier_id: {
+        customer_id: {
           editable: false,
-          value: $$purchase.get('supplier_id'),
-          options:supplierOptions
+          value: $$order.get('customer_id'),
+          options:customerOptions
         },
         delivery_code: {
           editable: false,
-          value: $$purchase.get('delivery_code')
+          value: $$order.get('delivery_code')
         },
         arrears: {
           editable: false,
-          value: $$purchase.get('arrears')
+          value: $$order.get('arrears')
         },
         count: {
-          value: $$purchase.get('count')
+          value: $$order.get('count')
         },
         totalCost: {
-          value: $$purchase.get('totalCost')
+          value: $$order.get('totalCost')
         },
         created_at: {
-          value: $$purchase.get('created_at')
+          value: $$order.get('created_at')
         },
         updated_at: {
-          value: $$purchase.get('updated_at')
+          value: $$order.get('updated_at')
         },
       };
     });
@@ -206,15 +206,15 @@ class Purchase extends Component {
    * @param dataChanged {Object[]} [{index, key, value}]
    */
   handleChange(datasChanged) {
-    let $$purchasesUpdated = this.state.$$purchases;
+    let $$ordersUpdated = this.state.$$orders;
     let idex = '';
     datasChanged.forEach(function (data) {
       const {index, key, value} = data;
       idex = index;
-      $$purchasesUpdated = $$purchasesUpdated.setIn([index, key], value);
+      $$ordersUpdated = $$ordersUpdated.setIn([index, key], value);
     });
 
-    this.props.updatePurchases({$$purchasesUpdated, index: idex, currentPage: this.props.pagination.current});
+    this.props.updateOrders({$$ordersUpdated, index: idex, currentPage: this.props.pagination.current});
   }
 
   /**
@@ -224,7 +224,7 @@ class Purchase extends Component {
    * @param sorter
    */
   handleTableChange(pagination, filters, sorter) {
-    this.props.getPurchases({page: pagination.current});
+    this.props.getOrders({page: pagination.current});
   }
 
   /**
@@ -242,7 +242,7 @@ class Purchase extends Component {
         ...fieldsValue,
         invoice_date: (fieldsValue['invoice_date'] && fieldsValue['invoice_date'].format('YYYY-MM-DD')) || '1000-01-01',
       };
-      this.props.addPurchase({lastPage: this.state.pagination.lastPage, ...values});
+      this.props.addOrder({lastPage: this.state.pagination.lastPage, ...values});
       this.setState({
         singleData: values,
         confirmLoading: true,
@@ -264,11 +264,11 @@ class Purchase extends Component {
         ...fieldsValue,
         invoice_date: (fieldsValue['invoice_date'] && fieldsValue['invoice_date'].format('YYYY-MM-DD')) || '1000-01-01',
       };
-      const purchase = this.state.$$purchases.get(this.state.currentIndex).toJS();
+      const order = this.state.$$orders.get(this.state.currentIndex).toJS();
 
-      const $$purchasesUpdated = this.state.$$purchases.set(this.state.currentIndex, fromJS({...purchase,...values}));
+      const $$ordersUpdated = this.state.$$orders.set(this.state.currentIndex, fromJS({...order,...values}));
 
-      this.props.updatePurchases({$$purchasesUpdated, index: this.state.currentIndex, currentPage: this.props.pagination.current});
+      this.props.updateOrders({$$ordersUpdated, index: this.state.currentIndex, currentPage: this.props.pagination.current});
       this.setState({
         singleData: values,
         confirmLoading: true,
@@ -303,12 +303,12 @@ class Purchase extends Component {
   }
 
   /**
-   * 删除某一个 purchase
+   * 删除某一个 order
    * @param index
    */
   deleteOne(index) {
-    const id = this.props.$$purchases.getIn([index, 'id']);
-    this.props.deletePurchase({id, index, currentPage: this.state.pagination.current});
+    const id = this.props.$$orders.getIn([index, 'id']);
+    this.props.deleteOrder({id, index, currentPage: this.state.pagination.current});
   }
 
   /**
@@ -319,7 +319,7 @@ class Purchase extends Component {
     this.setState({
       visible: true,
       title: '修改订货单',
-      singleData: this.getSingleData(index, this.state.$$purchases),
+      singleData: this.getSingleData(index, this.state.$$orders),
       currentIndex: index, // 当前修改项
       modalType: 'edit'
     });
@@ -328,23 +328,23 @@ class Purchase extends Component {
   /**
    * 返回 JSD 的 Modal 表单数据
    * @param index
-   * @param $$Purchases
+   * @param $$Orders
    * @returns
    */
-  getSingleData(index, $$Purchases) {
-    const purchase = $$Purchases.get(index).toJS();
+  getSingleData(index, $$Orders) {
+    const order = $$Orders.get(index).toJS();
     return {
-      ...purchase
+      ...order
     }
   }
 
   render() {
     const {visible, confirmLoading, modalType, pagination} = this.state;
 
-    const $$dataSource = this.initPurchases(this.state.$$purchases);
+    const $$dataSource = this.initOrders(this.state.$$orders);
 
     return (
-      <PurchasePage>
+      <OrderPage>
         <TableBox>
           <Button className="editable-add-btn" onClick={this.showModal}>Add</Button>
           <CollectionCreateForm
@@ -356,10 +356,10 @@ class Purchase extends Component {
             confirmLoading={confirmLoading}
             message={this.props.message}
             data={this.state.singleData}
-            suppliers={this.state.suppliers}
+            customers={this.state.customers}
           />
           <EditableTable
-            scroll={{ x: '120%', y: '100%' }}
+            scroll={{ x: '125%', y: '100%' }}
             pagination={pagination}
             editMore={this.editMore}
             columns={columns}
@@ -370,59 +370,59 @@ class Purchase extends Component {
             loading={this.props.status.includes('request')}
           />
         </TableBox>
-      </PurchasePage>
+      </OrderPage>
     );
   };
 }
 
-Purchase.propTypes = {
-  $$purchases: PropTypes.object.isRequired,
-  $$suppliers: PropTypes.object.isRequired,
+Order.propTypes = {
+  $$orders: PropTypes.object.isRequired,
+  $$customers: PropTypes.object.isRequired,
   pagination: PropTypes.object.isRequired,
   message: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
   ]),
   status: PropTypes.string,
-  getSuppliers: PropTypes.func.isRequired,
+  getCustomers: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    $$purchases: state.getIn(['purchasesReducer', 'purchases', 'data']),
-    $$suppliers: state.getIn(['suppliersReducer', 'suppliers']),
+    $$orders: state.getIn(['ordersReducer', 'orders', 'data']),
+    $$customers: state.getIn(['customersReducer', 'customers']),
     pagination: {
-      total: state.getIn(['purchasesReducer', 'purchases', 'total']),
-      current: state.getIn(['purchasesReducer', 'purchases', 'current_page']),
-      pageSize: state.getIn(['purchasesReducer', 'purchases', 'per_page']),
-      lastPage: state.getIn(['purchasesReducer', 'purchases', 'last_page']),
+      total: state.getIn(['ordersReducer', 'orders', 'total']),
+      current: state.getIn(['ordersReducer', 'orders', 'current_page']),
+      pageSize: state.getIn(['ordersReducer', 'orders', 'per_page']),
+      lastPage: state.getIn(['ordersReducer', 'orders', 'last_page']),
     },
-    message: state.getIn(['purchasesReducer', 'message']),
-    status: state.getIn(['purchasesReducer', 'status']),
+    message: state.getIn(['ordersReducer', 'message']),
+    status: state.getIn(['ordersReducer', 'status']),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getPurchases: (payload = {}) => {
-      dispatch(getPurchases(payload));
+    getOrders: (payload = {}) => {
+      dispatch(getOrders(payload));
     },
     /**
-     * @param payload {{$$purchasesUpdated: List, index: Number}}  index 被修改数据的索引 index
+     * @param payload {{$$ordersUpdated: List, index: Number}}  index 被修改数据的索引 index
      */
-    updatePurchases: (payload) => {
-      dispatch(updatePurchases(payload));
+    updateOrders: (payload) => {
+      dispatch(updateOrders(payload));
     },
-    addPurchase: (payload) => {
-      dispatch(addPurchase(payload));
+    addOrder: (payload) => {
+      dispatch(addOrder(payload));
     },
-    deletePurchase: (payload) => {
-      dispatch(deletePurchase(payload));
+    deleteOrder: (payload) => {
+      dispatch(deleteOrder(payload));
     },
-    getSuppliers: () => {
-      dispatch(getSuppliers());
+    getCustomers: () => {
+      dispatch(getCustomers());
     },
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Purchase));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Order));

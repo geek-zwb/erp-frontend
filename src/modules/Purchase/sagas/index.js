@@ -2,9 +2,7 @@
  * @file Purchase sagas
  * @author Created by geekzwb on 2017/10/24.
  */
-import store from 'store';
 import { put, takeLatest, call } from 'redux-saga/effects';
-import { fromJS } from 'immutable';
 import HTTPUtil from '../../../utils/Http';
 
 import {

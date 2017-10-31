@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import { Layout, Menu, Icon } from 'antd';
 import { withRouter } from 'react-router-dom';
 
-const {SubMenu} = Menu;
 const {Sider} = Layout;
 
 
