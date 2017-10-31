@@ -49,6 +49,7 @@ const columns = [
   {
     title: '订货标识',
     dataIndex: 'name',
+    width: 120
   }, {
     title: '创建时间',
     dataIndex: 'created_at',
@@ -78,6 +79,10 @@ const columns = [
     title: '更新时间',
     dataIndex: 'updated_at',
     width: 135,
+  },
+  {
+    title: '备注',
+    dataIndex: 'note',
   },
   {
     title: 'operation',
@@ -192,6 +197,10 @@ class Purchase extends Component {
         },
         created_at: {
           value: $$purchase.get('created_at')
+        },
+        note: {
+          editable: false,
+          value: $$purchase.get('note')
         },
         updated_at: {
           value: $$purchase.get('updated_at')
