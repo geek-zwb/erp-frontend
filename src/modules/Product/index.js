@@ -65,9 +65,9 @@ const columns = [
     dataIndex: 'type_id',
     width: 100,
   }, {
-    title: '库存',
+    title: '库存(总 / 家 / 亚马逊)',
     dataIndex: 'inventory',
-    width: 100,
+    width: 150,
   }, {
     title: '采购数量',
     dataIndex: 'inQty',
@@ -231,7 +231,8 @@ class Product extends Component {
           value: $$product.get('description'),
         },
         inventory: {
-          value: $$product.get('inventory')
+          value: `${$$product.get('inventory')} / ${$$product.getIn(['warehouses', 0, 'pivot', 'inventory'], 0)} / ${$$product.getIn(['warehouses', 1, 'pivot', 'inventory'], 0)}
+           `
         },
         inQty: {
           value: $$product.get('inQty')

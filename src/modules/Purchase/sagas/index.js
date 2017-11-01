@@ -66,7 +66,9 @@ function* addPurchase({payload}) {
   if (response.status === 'success') {
     yield put(addPurchaseSuccess());
     // 跳转到最后一页(即新增页)
-    yield put(getPurchases({page: payload.lastPage}));
+    // yield put(getPurchases({page: payload.lastPage}));
+    // 跳转到第一页
+    yield put(getPurchases({page: 1}));
   } else {
     yield put(addPurchaseFailed(response));
   }
