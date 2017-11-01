@@ -47,7 +47,7 @@ const columns = [
     fixed: 'left'
   },
   {
-    title: '订货标识',
+    title: '采购标识',
     dataIndex: 'name',
     width: 120
   }, {
@@ -303,7 +303,7 @@ class Purchase extends Component {
   showModal() {
     this.setState({
       visible: true,
-      title: '新增订货单',
+      title: '新增采购单',
       singleData: {},
       modalType: 'add'
     });
@@ -335,7 +335,7 @@ class Purchase extends Component {
   editMore(index) {
     this.setState({
       visible: true,
-      title: '修改订货单',
+      title: '修改采购单',
       singleData: this.getSingleData(index, this.state.$$purchases),
       currentIndex: index, // 当前修改项
       modalType: 'edit'

@@ -181,10 +181,10 @@ class CollectionCreateForm extends React.Component {
         confirmLoading={confirmLoading}
       >
         <Form layout="vertical">
-          <FormItem {...formItemLayout} label="订货标识">
+          <FormItem {...formItemLayout} label="采购标识">
             {getFieldDecorator('name', {
               initialValue: data.name || `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}`,
-              rules: [{required: true, message: '请输入订货标识!'}],
+              rules: [{required: true, message: '请输入采购标识!'}],
             })(
               <Input />
             )}

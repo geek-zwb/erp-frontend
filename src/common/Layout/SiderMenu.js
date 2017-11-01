@@ -103,11 +103,11 @@ class SiderMenu extends Component {
           <Menu.Item key="/products">
             <Icon type="gift"/><span>产品管理</span>
           </Menu.Item>
-          <Menu.Item key="/orders"><Icon type="book"/><span>订单管理</span></Menu.Item>
+          <Menu.Item key="/orders"><Icon type="book"/><span>订单(发货)管理</span></Menu.Item>
           <Menu.Item key="/types"><Icon type="appstore-o"/><span>产品分类管理</span></Menu.Item>
           <Menu.Item key="/units"><Icon type="api"/><span>产品计数单位管理</span></Menu.Item>
           <Menu.Item key="/suppliers"><Icon type="contacts"/><span>供应商管理</span></Menu.Item>
-          <Menu.Item key="/purchases"><Icon type="shop"/><span>订货管理</span></Menu.Item>
+          <Menu.Item key="/purchases"><Icon type="shop"/><span>采购管理</span></Menu.Item>
           <Menu.Item key="/customers">
             <Icon type="team"/><span>客户管理</span>
           </Menu.Item>

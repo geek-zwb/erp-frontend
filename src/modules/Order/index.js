@@ -15,7 +15,6 @@ import EditableTable from '../../common/Table/EditableTable';
 import CollectionCreateForm from './components/CollectionCreateForm';
 
 // action creator
-import { getCustomers } from '../Customer/actions';
 import { getOrders, updateOrders, addOrder, deleteOrder } from './actions';
 
 

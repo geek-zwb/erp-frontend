@@ -15,7 +15,7 @@ export const getBreadInfo = (url, systemSelected = 'ERP') => {
     '/orders': [systemSelected, '订单管理'],
     '/types': [systemSelected, '产品分类管理'],
     '/units': [systemSelected, '产品计数单位管理'],
-    '/purchases': [systemSelected, '订货管理'],
+    '/purchases': [systemSelected, '采购管理'],
     '/warehouses': [systemSelected, '仓库管理'],
     '/notification': [systemSelected, '通知'],
   };

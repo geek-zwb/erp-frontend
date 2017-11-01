@@ -4,9 +4,8 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Modal, Input, Select, DatePicker } from 'antd';
+import { Form, Modal, Input, Select } from 'antd';
 import styled from 'styled-components';
-import moment from 'moment';
 
 const Error = styled.div`
   color: #f04134;
