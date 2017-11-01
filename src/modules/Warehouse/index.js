@@ -11,6 +11,7 @@ import { Button } from 'antd';
 
 // components
 import EditableTable from '../../common/Table/EditableTable';
+import TransferWarehouse from './components/TransferWarehouse';
 
 // action creator
 import { getWarehouses, updateWarehouse, addWarehouse, deleteWarehouse } from './actions';
@@ -77,11 +78,14 @@ class Warehouse extends Component {
     this.state = {
       $$dataSource: this.initWarehouses(this.props.$$warehouses),
       count: this.props.$$warehouses.size,
+      visible: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.deleteOne = this.deleteOne.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+    this.showModal = this.showModal.bind(this);
   }
 
   /**
@@ -163,11 +167,23 @@ class Warehouse extends Component {
     this.props.deleteWarehouse({id, index});
   }
 
+  hideModal() {
+    this.setState({
+      visible: false
+    });
+  }
+  showModal() {
+    this.setState({
+      visible: true
+    });
+  }
+
   render() {
     return (
       <WarehousePage>
         <TableBox>
           <Button className="editable-add-btn" onClick={this.handleAdd}>Add</Button>
+          <Button style={{marginLeft: 20}} onClick={this.showModal}>产品换仓</Button>
           <EditableTable
             columns={columns}
             data={this.state.$$dataSource.toJS()}
@@ -178,6 +194,12 @@ class Warehouse extends Component {
             }}
           />
         </TableBox>
+        <TransferWarehouse
+          title="库存转移"
+          warehouses={this.props.$$warehouses.toJS()}
+          onCancel={this.hideModal}
+          visible={this.state.visible}
+        />
       </WarehousePage>
     );
   };
