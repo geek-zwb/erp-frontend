@@ -97,6 +97,10 @@ const columns = [
     title: '快递单号',
     dataIndex: 'delivery_code',
     width: 100,
+  },{
+    title: '运费',
+    dataIndex: 'delivery_amount',
+    width: 100,
   }, {
     title: '快递公司',
     dataIndex: 'delivery_company',
@@ -237,6 +241,10 @@ class Order extends Component {
         delivery_company: {
           editable: false,
           value: $$order.get('delivery_company')
+        },
+        delivery_amount: {
+          editable: false,
+          value: $$order.get('delivery_amount')
         },
         productsCount: {
           value: $$order.get('productsCount')

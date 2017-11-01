@@ -62,6 +62,10 @@ const columns = [
     title: '送货单号',
     dataIndex: 'delivery_code',
     width: 100,
+  },{
+    title: '运费',
+    dataIndex: 'delivery_amount',
+    width: 100,
   }, {
     title: '欠款',
     dataIndex: 'arrears',
@@ -184,6 +188,10 @@ class Purchase extends Component {
         delivery_code: {
           editable: false,
           value: $$purchase.get('delivery_code')
+        },
+        delivery_amount: {
+          editable: false,
+          value: $$purchase.get('delivery_amount')
         },
         arrears: {
           editable: false,

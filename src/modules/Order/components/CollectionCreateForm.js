@@ -258,6 +258,14 @@ class CollectionCreateForm extends React.Component {
             )}
             <Error>{message.delivery_company}</Error>
           </FormItem>
+          <FormItem {...formItemLayout} label="运费">
+            {getFieldDecorator('delivery_amount', {
+              initialValue: data.delivery_amount
+            })(
+              <Input />
+            )}
+            <Error>{message.delivery_amount}</Error>
+          </FormItem>
           <FormItem {...formItemLayout} label="备注">
             {getFieldDecorator('note', {
               initialValue: data.note,

@@ -77,6 +77,10 @@ const columns = [
     dataIndex: 'totalCost',
     width: 100,
   }, {
+    title: '平均采购单价',
+    dataIndex: 'purchasePrice',
+    width: 100,
+  },{
     title: '已售数量',
     dataIndex: 'outQty',
     width: 100,
@@ -84,7 +88,11 @@ const columns = [
     title: '总收入',
     dataIndex: 'income',
     width: 100,
-  }, {
+  },  {
+    title: '平均销售单价',
+    dataIndex: 'salePrice',
+    width: 100,
+  },{
     title: '订单数',
     dataIndex: 'orderCount',
     width: 100,
@@ -240,11 +248,17 @@ class Product extends Component {
         totalCost: {
           value: $$product.get('totalCost')
         },
+        purchasePrice: {
+          value: $$product.get('totalCost') / $$product.get('inQty')
+        },
         outQty: {
           value: $$product.get('outQty')
         },
         income: {
           value: $$product.get('income')
+        },
+        salePrice: {
+          value: $$product.get('income') / $$product.get('outQty')
         },
         orderCount: {
           value: $$product.get('orderCount')
@@ -427,7 +441,7 @@ class Product extends Component {
             types={this.state.types}
           />
           <EditableTable
-            scroll={{x: '170%', y: '100%'}}
+            scroll={{x: '180%', y: '100%'}}
             pagination={pagination}
             editMore={this.editMore}
             columns={columns}
