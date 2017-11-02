@@ -7,8 +7,9 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { Button, DatePicker } from 'antd';
 import { List, fromJS } from 'immutable';
+import moment from 'moment';
 
 // components
 import EditableTable from '../../common/Table/EditableTable';
@@ -19,6 +20,7 @@ import { getUnits } from '../Unit/actions';
 import { getTypes } from '../Type/actions';
 import { getProducts, updateProduct, addProduct, deleteProduct } from './actions';
 
+const {RangePicker} = DatePicker;
 
 const ProductPage = styled.div`
   background: #fff;
@@ -57,10 +59,6 @@ const columns = [
     dataIndex: 'sku',
     width: 120
   }, {
-    title: '单位',
-    dataIndex: 'unit_id',
-    width: 50,
-  }, {
     title: '分类',
     dataIndex: 'type_id',
     width: 100,
@@ -68,6 +66,10 @@ const columns = [
     title: '库存(总 / 家 / 亚马逊)',
     dataIndex: 'inventory',
     width: 150,
+  }, {
+    title: '单位',
+    dataIndex: 'unit_id',
+    width: 50,
   }, {
     title: '采购数量',
     dataIndex: 'inQty',
@@ -80,7 +82,7 @@ const columns = [
     title: '平均采购单价',
     dataIndex: 'purchasePrice',
     width: 100,
-  },{
+  }, {
     title: '已售数量',
     dataIndex: 'outQty',
     width: 100,
@@ -88,11 +90,11 @@ const columns = [
     title: '总收入',
     dataIndex: 'income',
     width: 100,
-  },  {
+  }, {
     title: '平均销售单价',
     dataIndex: 'salePrice',
     width: 100,
-  },{
+  }, {
     title: '订单数',
     dataIndex: 'orderCount',
     width: 100,
@@ -127,6 +129,7 @@ const columns = [
 class Product extends Component {
   constructor(props) {
     super(props);
+    const date = new Date();
     this.state = {
       $$products: this.props.$$products || List(),
       count: 0,
@@ -138,7 +141,11 @@ class Product extends Component {
       currentIndex: '', // 当前修改项在 $$products 中的 index
       modalType: 'add',
       units: this.props.$$units.toJS(),
-      types: this.props.$$types.toJS()
+      types: this.props.$$types.toJS(),
+      dateLimit: {
+        fromDate: `${date.getFullYear()}-01-01`,
+        toDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+      }
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -150,6 +157,7 @@ class Product extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.showModal = this.showModal.bind(this);
     this.editMore = this.editMore.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
   }
 
   /**
@@ -163,7 +171,7 @@ class Product extends Component {
       this.props.getTypes();
     }
     if (!this.props.status.includes('product_request')) {
-      this.props.getProducts({page: this.props.pagination.current});
+      this.props.getProducts({page: this.props.pagination.current, ...this.state.dateLimit});
     }
   }
 
@@ -301,7 +309,8 @@ class Product extends Component {
    * @param sorter
    */
   handleTableChange(pagination, filters, sorter) {
-    this.props.getProducts({page: pagination.current});
+    console.log('sorter', sorter);
+    this.props.getProducts({page: pagination.current, ...this.state.dateLimit});
   }
 
   /**
@@ -407,6 +416,22 @@ class Product extends Component {
   }
 
   /**
+   * 时间筛选
+   * @param date moment?
+   * @param dateString
+   */
+  onDateChange(date, dateString) {
+    const dateLimit = {
+      fromDate: dateString[0],
+      toDate: dateString[1],
+    };
+    this.setState({
+      dateLimit
+    });
+    this.props.getProducts(dateLimit);
+  }
+
+  /**
    * 返回 JSD 的 Modal 表单数据
    * @param index
    * @param $$Products
@@ -420,14 +445,37 @@ class Product extends Component {
   }
 
   render() {
-    const {visible, confirmLoading, modalType, pagination} = this.state;
+    const {visible, confirmLoading, modalType, pagination, dateLimit} = this.state;
 
     const $$dataSource = this.initProducts(this.state.$$products);
+
+    // 筛选时间段
+    const dateFormat = 'YYYY-MM-DD';
+    const from = dateLimit.fromDate;
+    const to = dateLimit.toDate;
 
     return (
       <ProductPage>
         <TableBox>
-          <Button className="editable-add-btn" onClick={this.showModal}>Add</Button>
+          <div>
+            <Button className="editable-add-btn" onClick={this.showModal}>Add</Button>
+            <RangePicker
+              defaultValue={[moment(from, dateFormat), moment(to, dateFormat)]}
+              format={dateFormat}
+              onChange={this.onDateChange}
+            />
+          </div>
+          <EditableTable
+            scroll={{x: '180%', y: '100%'}}
+            pagination={pagination}
+            editMore={this.editMore}
+            columns={columns}
+            data={$$dataSource.toJS()}
+            handleChange={this.handleChange}
+            handleTableChange={this.handleTableChange}
+            deleteOne={this.deleteOne}
+            loading={this.props.status.includes('request')}
+          />
           <CollectionCreateForm
             ref={this.saveFormRef}
             visible={visible}
@@ -439,17 +487,6 @@ class Product extends Component {
             data={this.state.singleData}
             units={this.state.units}
             types={this.state.types}
-          />
-          <EditableTable
-            scroll={{x: '180%', y: '100%'}}
-            pagination={pagination}
-            editMore={this.editMore}
-            columns={columns}
-            data={$$dataSource.toJS()}
-            handleChange={this.handleChange}
-            handleTableChange={this.handleTableChange}
-            deleteOne={this.deleteOne}
-            loading={this.props.status.includes('request')}
           />
         </TableBox>
       </ProductPage>

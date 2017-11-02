@@ -22,6 +22,32 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   });
 
+/**
+ * Encode url and params to url with query string
+ * @param {String} url
+ * @param {Object} params
+ * @return {String} url
+ */
+function urlBuilder(url, params) {
+  if (params) {
+    if (typeof params === 'string') {
+      url += '?';
+      url += params;
+    } else if (typeof params === 'object' && Object.keys(params).length > 0) {
+      // TODO: identify array
+      url += '?';
+      for (let prop in params) {
+        //去除encodeURIComponent,如果确定要encode,自行在payload中加入
+        url += prop + '=' + (params[prop] ? params[prop] : '') + '&';
+      }
+      url = url.replace(/&$/, '');
+    }
+    return url;
+  } else {
+    return url;
+  }
+}
+
 export default class HTTPUtil {
   static setOptions() {
     if (store.get('access_token')) {
@@ -30,9 +56,10 @@ export default class HTTPUtil {
     // axios.defaults.headers.['Content-Type'] = 'application/x-www-form-urlencoded';
   }
 
-  static get(url, config) {
+  static get(url, params, config) {
+    const newUrl = urlBuilder(url, params);
     HTTPUtil.setOptions();
-    return axios.get(url, config)
+    return axios.get(newUrl, config)
       .then(function (response) {
         return response.data;
       })

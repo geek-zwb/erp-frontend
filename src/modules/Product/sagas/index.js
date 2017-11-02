@@ -24,12 +24,13 @@ import {
   deleteProductFailed,
 } from '../actions';
 
-function getProduct(page = '') {
-  return HTTPUtil.get(`product?page=${page}`);
+function getProduct(params = {}) {
+  return HTTPUtil.get('product', params);
 }
 
 function* getProductRequest({payload}) {
-  const response = yield call(getProduct, payload && payload.page);
+  const params = payload || {};
+  const response = yield call(getProduct, params);
   if (response.status === 'success') {
     yield put(getProductSuccess(response.data));
   } else {

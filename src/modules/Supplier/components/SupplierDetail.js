@@ -251,6 +251,7 @@ class SupplierDetail extends Component {
           </div>
 
           <EditableTable
+            pagination={false}
             scroll={{x: '150%', y: '100%'}}
             columns={columns}
             data={this.state.dataSource}
