@@ -29,7 +29,7 @@ const routes = [
   },
   {
     path: '/suppliers',
-    exact: true,
+    // exact: true,
     auth: true,
     component: Supplier
   },

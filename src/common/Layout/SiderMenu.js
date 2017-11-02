@@ -55,7 +55,7 @@ class SiderMenu extends Component {
       case['/units'].indexOf(location.pathname) !== -1:
         defaultSelectedKeys = '/units';
         break;
-      case['/suppliers'].indexOf(location.pathname) !== -1:
+      case location.pathname.includes('suppliers'):
         defaultSelectedKeys = '/suppliers';
         break;
       case['/purchases'].indexOf(location.pathname) !== -1:

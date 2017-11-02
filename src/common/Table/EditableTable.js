@@ -71,6 +71,17 @@ class EditableTable extends Component {
                   )
                 }
 
+                {
+                  // detail
+                  typeof (this.props.showDetail) !== 'function' ? '' : (
+                    <ShowWhenHover>
+                      <Button onClick={this.props.showDetail.bind('', index)}>
+                        Detail
+                      </Button>
+                    </ShowWhenHover>
+                  )
+                }
+
               </div>
             );
           }

@@ -8,9 +8,11 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Button } from 'antd';
+import {Route} from 'react-router-dom';
 
 // components
 import EditableTable from '../../common/Table/EditableTable';
+import SupplierDetail from './components/SupplierDetail';
 
 // action creator
 import { getSuppliers, updateSupplier, addSupplier, deleteSupplier } from './actions';
@@ -86,6 +88,7 @@ class Supplier extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.deleteOne = this.deleteOne.bind(this);
+    this.showDetail = this.showDetail.bind(this);
   }
 
   /**
@@ -167,21 +170,34 @@ class Supplier extends Component {
     this.props.deleteSupplier({id, index});
   }
 
+  showDetail(index) {
+    const id = this.props.$$suppliers.getIn([index, 'id']);
+    this.props.history.push(`${this.props.match.url}/${id}`);
+  }
+
   render() {
+    const {match, $$suppliers, status} = this.props;
     return (
       <SupplierPage>
-        <TableBox>
-          <Button className="editable-add-btn" onClick={this.handleAdd}>Add</Button>
-          <EditableTable
-            columns={columns}
-            data={this.state.$$dataSource.toJS()}
-            handleChange={this.handleChange}
-            deleteOne={this.deleteOne}
-            loading={this.props.status.includes('request')}
-            handleTableChange={() => {
-            }}
-          />
-        </TableBox>
+        <Route path={`${match.url}/:supplierId`}
+               render={ (props) => <SupplierDetail $$suppliers={$$suppliers} {...props}/>}/>
+        <Route exact path={match.url}
+               render={() => (
+                 <TableBox>
+                   <Button className="editable-add-btn" onClick={this.handleAdd}>Add</Button>
+                   <EditableTable
+                     showDetail={this.showDetail}
+                     columns={columns}
+                     data={this.state.$$dataSource.toJS()}
+                     handleChange={this.handleChange}
+                     deleteOne={this.deleteOne}
+                     loading={status.includes('request')}
+                     handleTableChange={() => {
+                     }}
+                   />
+                 </TableBox>
+               )}
+        />
       </SupplierPage>
     );
   };

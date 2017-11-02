@@ -19,7 +19,8 @@ export const getBreadInfo = (url, systemSelected = 'ERP') => {
     '/warehouses': [systemSelected, '仓库管理'],
     '/notification': [systemSelected, '通知'],
   };
-  let breadInfo = breadConfig[Object.keys(breadConfig).find((item, index) => item === url)];
+  // let breadInfo = breadConfig[Object.keys(breadConfig).find((item, index) => item === url)];
+  let breadInfo = breadConfig[Object.keys(breadConfig).find((item, index) => url.includes(item))];
   if (url === '/') {
     breadInfo = breadConfig['/dashboard'];
   }
