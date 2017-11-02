@@ -6,12 +6,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Button, Icon } from 'antd';
+import { Button, Icon, DatePicker } from 'antd';
+import moment from 'moment';
 
 import HTTPUtil from '../../../utils/Http';
 
 // components
 import EditableTable from '../../../common/Table/EditableTable';
+
+const {RangePicker} = DatePicker;
 
 const DetailPage = styled.div`
   background: #fff;
@@ -81,8 +84,8 @@ const columns = [
   }, {
     title: '快递费',
     dataIndex: 'delivery_amount',
-    width: 50,
-  },  {
+    width: 100,
+  }, {
     title: '单次采购产品花费',
     dataIndex: 'purchaseCost',
     width: 150,
@@ -104,10 +107,28 @@ class SupplierDetail extends Component {
       dataSource: [],
       loading: true
     };
+
+    this.onDateChange = this.onDateChange.bind(this);
+    this.requestSupplier = this.requestSupplier.bind(this);
+  }
+
+  onDateChange(date, dateString) {
+    this.requestSupplier({
+      fromDate: dateString[0],
+      toDate: dateString[1],
+    });
   }
 
   componentDidMount() {
-    HTTPUtil.post(`analysis/supplier/${this.state.supplierId}`).then((res) => {
+    this.requestSupplier();
+  }
+
+  /**
+   *
+   * @param data
+   */
+  requestSupplier(data={}) {
+    HTTPUtil.post(`analysis/supplier/${this.state.supplierId}`, data).then((res) => {
       if (res.status === 'success') {
         this.setState({
           dataSource: this.initProducts(res.data),
@@ -204,16 +225,29 @@ class SupplierDetail extends Component {
 
     const supplier = ($$supplier && $$supplier.toJS()) || {};
 
+    const dateFormat = 'YYYY-MM-DD';
+    const date = new Date();
+    const from = `${date.getFullYear()}-01-01`;
+    const to = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
     return (
       <DetailPage>
         <TableBox>
-          <div style={{textAlign: 'center', marginBottom: '20px'}}>
+          <div style={{marginBottom: '20px'}}>
             <Button style={{float: 'right'}}>
               <Link to='/suppliers'>
                 <Icon type="rollback"/>
               </Link>
             </Button>
-            <h2 style={{fontSize: '20px', fontWeight: 600}}>{new Date().getFullYear()} 年 {supplier.name} 供 货 情 况 明 细 表</h2>
+            <h2 style={{fontSize: '20px', fontWeight: 600, textAlign: 'center'}}>{new Date().getFullYear()}
+              年 {supplier.name} 供 货 情 况 明 细 表</h2>
+            <div>
+              <RangePicker
+                defaultValue={[moment(from, dateFormat), moment(to, dateFormat)]}
+                format={dateFormat}
+                onChange={this.onDateChange}
+              />
+            </div>
           </div>
 
           <EditableTable
