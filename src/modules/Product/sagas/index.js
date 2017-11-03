@@ -51,7 +51,7 @@ function* updateProduct({payload}) {
 
   if (response.status === 'success') {
     yield put(updateProductSuccess());
-    yield put(getProducts({page: payload.currentPage}));
+    yield put(getProducts({page: payload.currentPage, ...payload.dateLimit}));
   } else {
     yield put(updateProductFailed(response));
   }
@@ -66,8 +66,8 @@ function* addProduct({payload}) {
 
   if (response.status === 'success') {
     yield put(addProductSuccess());
-    // 跳转到最后一页(即新增页)
-    yield put(getProducts({page: payload.lastPage}));
+    // 跳转到第一页(即新增页)
+    yield put(getProducts({page: 1, ...payload.dateLimit}));
   } else {
     yield put(addProductFailed(response));
   }
@@ -84,7 +84,7 @@ function* deleteProduct({payload}) {
     yield put(deleteProductSuccess(payload));
 
     // 刷新当前页
-    yield put(getProducts({page: payload.currentPage}));
+    yield put(getProducts({page: payload.currentPage, ...payload.dateLimit}));
   } else {
     yield put(deleteProductFailed(response));
   }

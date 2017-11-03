@@ -24,12 +24,13 @@ import {
   deletePurchaseFailed,
 } from '../actions';
 
-function getPurchase(page = '') {
-  return HTTPUtil.get(`purchase?page=${page}`);
+function getPurchase(params = {}) {
+  return HTTPUtil.get('purchase', params);
 }
 
 function* getPurchaseRequest({payload}) {
-  const response = yield call(getPurchase, payload && payload.page);
+  const params = payload || {};
+  const response = yield call(getPurchase, params);
   if (response.status === 'success') {
     yield put(getPurchaseSuccess(response.data));
   } else {
@@ -50,7 +51,7 @@ function* updatePurchase({payload}) {
 
   if (response.status === 'success') {
     yield put(updatePurchasesSuccess());
-    yield put(getPurchases({page: payload.currentPage}));
+    yield put(getPurchases({page: payload.currentPage, ...payload.dateLimit}));
   } else {
     yield put(updatePurchasesFailed(response));
   }
@@ -85,7 +86,7 @@ function* deletePurchase({payload}) {
     yield put(deletePurchaseSuccess(payload));
 
     // 刷新当前页
-    yield put(getPurchases({page: payload.currentPage}));
+    yield put(getPurchases({page: payload.currentPage, ...payload.dateLimit}));
   } else {
     yield put(deletePurchaseFailed(response));
   }

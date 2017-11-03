@@ -7,17 +7,19 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { Button, DatePicker } from 'antd';
 import { List, fromJS } from 'immutable';
+import moment from 'moment';
 
 // components
 import EditableTable from '../../common/Table/EditableTable';
 import CollectionCreateForm from './components/CollectionCreateForm';
 
 // action creator
-import {getSuppliers} from '../Supplier/actions'
+import { getSuppliers } from '../Supplier/actions'
 import { getPurchases, updatePurchases, addPurchase, deletePurchase } from './actions';
 
+const {RangePicker} = DatePicker;
 
 const PurchasePage = styled.div`
   background: #fff;
@@ -36,6 +38,13 @@ const TableBox = styled.div`
   }
   .editable-add-btn {
     margin-bottom: 8px;
+  }
+`;
+const FilterBox = styled.div`
+  margin-bottom: 10px;
+  & > span {
+    vertical-align: top;
+    margin-left: 5px;
   }
 `;
 
@@ -58,11 +67,11 @@ const columns = [
     title: '供应商',
     dataIndex: 'supplier_id',
     width: 150,
-  },{
+  }, {
     title: '送货单号',
     dataIndex: 'delivery_code',
     width: 100,
-  },{
+  }, {
     title: '运费',
     dataIndex: 'delivery_amount',
     width: 100,
@@ -99,6 +108,7 @@ const columns = [
 class Purchase extends Component {
   constructor(props) {
     super(props);
+    const date = new Date();
     this.state = {
       $$purchases: this.props.$$purchases || List(),
       count: 0,
@@ -109,7 +119,11 @@ class Purchase extends Component {
       singleData: {},  // 新增或者修改某个 purchase
       currentIndex: '', // 当前修改项在 $$purchases 中的 index
       modalType: 'add',
-      suppliers: this.props.$$suppliers.toJS()
+      suppliers: this.props.$$suppliers.toJS(),
+      dateLimit: {
+        fromDate: `${date.getFullYear()}-01-01`,
+        toDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+      }
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -121,17 +135,19 @@ class Purchase extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.showModal = this.showModal.bind(this);
     this.editMore = this.editMore.bind(this);
+    this.onDateChange = this.onDateChange.bind(this);
+
   }
 
   /**
    * dispatch getPurchases
    */
   componentDidMount() {
-    if(this.props.$$suppliers.isEmpty()) {
+    if (this.props.$$suppliers.isEmpty()) {
       this.props.getSuppliers();
     }
     if (!this.props.status.includes('purchase_request')) {
-      this.props.getPurchases({page: this.props.pagination.current});
+      this.props.getPurchases({page: this.props.pagination.current, ...this.state.dateLimit});
     }
   }
 
@@ -183,7 +199,7 @@ class Purchase extends Component {
         supplier_id: {
           editable: false,
           value: $$purchase.get('supplier_id'),
-          options:supplierOptions
+          options: supplierOptions
         },
         delivery_code: {
           editable: false,
@@ -231,7 +247,12 @@ class Purchase extends Component {
       $$purchasesUpdated = $$purchasesUpdated.setIn([index, key], value);
     });
 
-    this.props.updatePurchases({$$purchasesUpdated, index: idex, currentPage: this.props.pagination.current});
+    this.props.updatePurchases({
+      $$purchasesUpdated,
+      index: idex,
+      currentPage: this.props.pagination.current,
+      dateLimit: this.state.dateLimit
+    });
   }
 
   /**
@@ -241,7 +262,7 @@ class Purchase extends Component {
    * @param sorter
    */
   handleTableChange(pagination, filters, sorter) {
-    this.props.getPurchases({page: pagination.current});
+    this.props.getPurchases({page: pagination.current, ...this.state.dateLimit});
   }
 
   /**
@@ -283,9 +304,14 @@ class Purchase extends Component {
       };
       const purchase = this.state.$$purchases.get(this.state.currentIndex).toJS();
 
-      const $$purchasesUpdated = this.state.$$purchases.set(this.state.currentIndex, fromJS({...purchase,...values}));
+      const $$purchasesUpdated = this.state.$$purchases.set(this.state.currentIndex, fromJS({...purchase, ...values}));
 
-      this.props.updatePurchases({$$purchasesUpdated, index: this.state.currentIndex, currentPage: this.props.pagination.current});
+      this.props.updatePurchases({
+        $$purchasesUpdated,
+        index: this.state.currentIndex,
+        currentPage: this.props.pagination.current,
+        dateLimit: this.state.dateLimit
+      });
       this.setState({
         singleData: values,
         confirmLoading: true,
@@ -325,7 +351,10 @@ class Purchase extends Component {
    */
   deleteOne(index) {
     const id = this.props.$$purchases.getIn([index, 'id']);
-    this.props.deletePurchase({id, index, currentPage: this.state.pagination.current});
+    this.props.deletePurchase({
+      id, index, currentPage: this.state.pagination.current,
+      dateLimit: this.state.dateLimit
+    });
   }
 
   /**
@@ -355,15 +384,43 @@ class Purchase extends Component {
     }
   }
 
+  /**
+   * 时间筛选
+   * @param date moment?
+   * @param dateString
+   */
+  onDateChange(date, dateString) {
+    const dateLimit = {
+      fromDate: dateString[0],
+      toDate: dateString[1],
+    };
+    this.setState({
+      dateLimit
+    });
+    this.props.getPurchases(dateLimit);
+  }
+
   render() {
-    const {visible, confirmLoading, modalType, pagination} = this.state;
+    const {visible, confirmLoading, modalType, pagination, dateLimit} = this.state;
 
     const $$dataSource = this.initPurchases(this.state.$$purchases);
+
+    // 筛选时间段
+    const dateFormat = 'YYYY-MM-DD';
+    const from = dateLimit.fromDate;
+    const to = dateLimit.toDate;
 
     return (
       <PurchasePage>
         <TableBox>
-          <Button className="editable-add-btn" onClick={this.showModal}>Add</Button>
+          <FilterBox>
+            <Button onClick={this.showModal}>Add</Button>
+            <RangePicker
+              defaultValue={[moment(from, dateFormat), moment(to, dateFormat)]}
+              format={dateFormat}
+              onChange={this.onDateChange}
+            />
+          </FilterBox>
           <CollectionCreateForm
             ref={this.saveFormRef}
             visible={visible}
@@ -376,7 +433,7 @@ class Purchase extends Component {
             suppliers={this.state.suppliers}
           />
           <EditableTable
-            scroll={{ x: '120%', y: '100%' }}
+            scroll={{x: '120%', y: '100%'}}
             pagination={pagination}
             editMore={this.editMore}
             columns={columns}

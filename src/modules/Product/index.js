@@ -41,6 +41,13 @@ const TableBox = styled.div`
     margin-bottom: 8px;
   }
 `;
+const FilterBox = styled.div`
+  margin-bottom: 10px;
+  & > span {
+    vertical-align: top;
+    margin-left: 5px;
+  }
+`;
 
 const columns = [
   {
@@ -299,7 +306,10 @@ class Product extends Component {
       $$productsUpdated = $$productsUpdated.setIn([index, key], value);
     });
 
-    this.props.updateProduct({$$productsUpdated, index: idex, currentPage: this.props.pagination.current});
+    this.props.updateProduct({
+      $$productsUpdated, index: idex, currentPage: this.props.pagination.current,
+      dateLimit: this.state.dateLimit
+    });
   }
 
   /**
@@ -328,7 +338,10 @@ class Product extends Component {
         ...fieldsValue,
         invoice_date: (fieldsValue['invoice_date'] && fieldsValue['invoice_date'].format('YYYY-MM-DD')) || '1000-01-01',
       };
-      this.props.addProduct({lastPage: this.state.pagination.lastPage, ...values});
+      this.props.addProduct({
+        lastPage: this.state.pagination.lastPage, ...values,
+        dateLimit: this.state.dateLimit
+      });
       this.setState({
         singleData: values,
         confirmLoading: true,
@@ -357,7 +370,8 @@ class Product extends Component {
       this.props.updateProduct({
         $$productsUpdated,
         index: this.state.currentIndex,
-        currentPage: this.props.pagination.current
+        currentPage: this.props.pagination.current,
+        dateLimit: this.state.dateLimit
       });
       this.setState({
         singleData: values,
@@ -398,7 +412,10 @@ class Product extends Component {
    */
   deleteOne(index) {
     const id = this.props.$$products.getIn([index, 'id']);
-    this.props.deleteProduct({id, index, currentPage: this.state.pagination.current});
+    this.props.deleteProduct({
+      id, index, currentPage: this.state.pagination.current,
+      dateLimit: this.state.dateLimit
+    });
   }
 
   /**
@@ -457,14 +474,14 @@ class Product extends Component {
     return (
       <ProductPage>
         <TableBox>
-          <div>
-            <Button className="editable-add-btn" onClick={this.showModal}>Add</Button>
+          <FilterBox>
+            <Button onClick={this.showModal}>Add</Button>
             <RangePicker
               defaultValue={[moment(from, dateFormat), moment(to, dateFormat)]}
               format={dateFormat}
               onChange={this.onDateChange}
             />
-          </div>
+          </FilterBox>
           <EditableTable
             scroll={{x: '180%', y: '100%'}}
             pagination={pagination}
