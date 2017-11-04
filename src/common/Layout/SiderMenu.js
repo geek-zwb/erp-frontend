@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Menu, Icon } from 'antd';
 import { withRouter } from 'react-router-dom';
+import store from 'store';
 
 const {Sider} = Layout;
 
@@ -16,13 +17,13 @@ class SiderMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: false,
+      collapsed: store.get('collapsed', false),
     };
-
     this.toggle = this.toggle.bind(this);
   }
 
   toggle() {
+    store.set('collapsed', !this.state.collapsed);
     this.setState({
       collapsed: !this.state.collapsed,
     });
