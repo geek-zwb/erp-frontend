@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Modal, Input, Button, DatePicker, AutoComplete } from 'antd';
+import { Form, Modal, Input, Button, DatePicker, AutoComplete, Select } from 'antd';
 import styled from 'styled-components';
 import moment from 'moment';
 import HTTPUtil from '../../../utils/Http';
@@ -31,15 +31,25 @@ const ProductItemBox = styled.div`
 //
 const FormItem = Form.Item;
 const AutoCompleteOption = AutoComplete.Option;
+const Option = Select.Option;
+
+const orderStatusMap = [
+  // {key: 0, name: '待发货'},
+  {key: 1, name: '已发货'},
+  {key: 2, name: '有退货、商品损坏、不可退供应商、丢弃'},
+  {key: 3, name: '有退货、可退供应商或可继续销售'},
+  {key: 4, name: '已重发'},
+];
 
 class CollectionCreateForm extends React.Component {
   constructor(props) {
     super(props);
     this.cachePropducts = this.props.data.products;
     this.state = {
+      orderStatus:[],
       autoCompleteResult: [],
       customerSearchResult: [],
-      products: this.props.data.products ? this.props.data.products : [],
+      products: this.props.data.products ? this.props.data.products : [{status: 1}],
       productCount: this.props.data.products ? this.props.data.products.length : 0
     };
 
@@ -47,6 +57,7 @@ class CollectionCreateForm extends React.Component {
     this.handleCustomerChange = this.handleCustomerChange.bind(this);
     this.handleAddProduct = this.handleAddProduct.bind(this);
     this.handleDeleteProduct = this.handleDeleteProduct.bind(this);
+    this.orderStatusChange = this.orderStatusChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -68,7 +79,7 @@ class CollectionCreateForm extends React.Component {
       productCount: this.state.productCount + 1,
       products: [
         ...this.state.products,
-        {}
+        {status: 1}
       ]
     });
   }
@@ -129,6 +140,18 @@ class CollectionCreateForm extends React.Component {
     }
   };
 
+  // 产品订单状态改变
+  orderStatusChange(value, option) {
+    const index = option.props.idex;
+    const product = this.state.products[index];
+    const newProduct = {...product, status: value};
+    let newProducts = this.state.products;
+    newProducts[index] = newProduct;
+    this.setState({
+      products: newProducts
+    });
+  }
+
   render() {
     const {title, visible, onCancel, onOk, confirmLoading, form, data, message} = this.props;
     const {getFieldDecorator} = form;
@@ -146,9 +169,9 @@ class CollectionCreateForm extends React.Component {
     };
 
     const customerOptions = customerSearchResult.map((customer) => {
-      return <AutoCompleteOption key={customer.email} value={customer.email}>{customer.name + ' ' + customer.email}</AutoCompleteOption>;
+      return <AutoCompleteOption key={customer.email}
+                                 value={customer.email}>{customer.name + ' ' + customer.email}</AutoCompleteOption>;
     });
-
 
     const productOptions = autoCompleteResult.map((product) => {
       return <AutoCompleteOption key={product.name}>{product.name}</AutoCompleteOption>;
@@ -170,6 +193,28 @@ class CollectionCreateForm extends React.Component {
               <Input />
             </AutoComplete>
           )}
+          {getFieldDecorator(`products[${index}][status]`, {
+            initialValue: product.status,
+            rules: [{required: true, message: 'Please select the status!'}],
+          })(
+            <Select onSelect={this.orderStatusChange}>
+              {
+                orderStatusMap.map((status) => {
+                  return (
+                    <Option key={status.key} value={status.key} idex={index}>
+                      {status.name}
+                    </Option>
+                  );
+                })
+              }
+            </Select>
+          )}
+          {
+            product.status === 2 ? getFieldDecorator(`products[${index}][returns_count]`, {
+              initialValue: product.returns_count,
+              rules: [{required: true, message: 'Please input 退货数量 !'}],
+            })(<Input placeholder="* 退货的产品数量"/>) : ''
+          }
           {getFieldDecorator(`products[${index}][count]`, {
             initialValue: product.count,
             rules: [{required: true, message: 'Please input product count!'}],
@@ -272,7 +317,8 @@ class CollectionCreateForm extends React.Component {
             })(<Input.TextArea />)}
             <Error>{message.note}</Error>
           </FormItem>
-          <FormItem {...formItemLayout} label="* 产品相关信息">
+          <FormItem {...formItemLayout} label="产品相关信息">
+            <p>notice：如发生退货，请自行计算并修改最终售出的产品数量。如果退货产品中，有两种情况同时发生，请选择 有退货、商品损坏、不可退供应商、丢弃 选项, 此时库存保持不变，否则，库存将增加退货的数量</p>
             {prodctItems}
             <div style={{marginTop: '10px'}}>
               <Button type='primary' onClick={this.handleAddProduct}>Add</Button>

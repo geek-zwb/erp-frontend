@@ -85,10 +85,6 @@ const columns = [
       width: 100,
     }],
   }, {
-    title: '发货状态',
-    dataIndex: 'status',
-    width: 100,
-  }, {
     title: '发货时间',
     dataIndex: 'delivery_date',
     width: 100,
@@ -224,10 +220,6 @@ class Order extends Component {
         order_code: {
           editable: false,
           value: $$order.get('order_code')
-        },
-        status: {
-          editable: false,
-          value: $$order.get('status')
         },
         delivery_date: {
           editable: false,
