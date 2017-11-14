@@ -17,6 +17,7 @@ axios.interceptors.response.use(
   response => response,
   (error) => {
     if (error.response.status === 401) {
+      store.clearAll();
       window.location.href = '/login';
       //store.dispatch(authLogout())
     }
