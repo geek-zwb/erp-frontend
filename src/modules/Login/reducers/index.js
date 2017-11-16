@@ -9,6 +9,8 @@ import store from 'store';
 // action types
 import {LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILED} from '../actions';
 
+export const LOGOUT = 'LOGOUT';
+
 const $$initialState = fromJS({
   status: 'wait',
   isAuthenticated: !!store.get('access_token'),
@@ -35,6 +37,10 @@ const authReducer = ($$state = $$initialState, {type, payload = {}}) => {
     case LOGIN_FAILED: {
       store.clearAll();
       return $$state.set('status', 'failed').set('message', payload.message);
+    }
+    case LOGOUT: {
+      store.clearAll();
+      return $$state.set('status', 'wait').set('isAuthenticated', false);
     }
     default:
       return $$state;

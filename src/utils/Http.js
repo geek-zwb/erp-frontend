@@ -8,7 +8,7 @@ import store from 'store';
 //import { authLogout } from '../store/actions/auth'
 
 
-axios.defaults.baseURL = ROOT_URL.API_URL;
+axios.defaults.baseURL = window.ROOT_URL.API_URL;
 axios.defaults.headers.common.Accept = 'application/json';
 // axios.defaults.headers.common['X-CSRF-TOKEN'] = window.Laravel.csrfToken;
 // axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

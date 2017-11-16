@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Input } from 'antd';
 
@@ -51,7 +52,6 @@ const MenuUl = styled.ul`
   }
 `;
 
-@withRouter
 class RightMenu extends Component {
   render() {
     return (
@@ -81,9 +81,9 @@ class RightMenu extends Component {
                 </Link>
               </li>
               <li>
-                <Link to="/login">
+                <a onClick={this.props.logout}>
                   <span className="global-icon icon-tuichu"></span>
-                </Link>
+                </a>
               </li>
             </MenuUl>
           </li>
@@ -97,4 +97,14 @@ RightMenu.propTypes = {
   style: PropTypes.object
 };
 
-export default RightMenu;
+function mapDispatchToProps(dispatch) {
+  return {
+    logout: () => {
+      dispatch({type: 'LOGOUT'});
+    }
+  };
+}
+
+export default withRouter(connect(() => {
+  return {};
+}, mapDispatchToProps)(RightMenu));

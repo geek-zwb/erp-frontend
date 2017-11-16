@@ -70,7 +70,7 @@ class LoginForm extends Component {
           )}
           <a className="login-form-forgot" href="">Forgot password</a>
         </FormItem>
-        <Button type="primary" htmlType="submit" className="login-form-button">
+        <Button loading={this.props.status.includes('request')} type="primary" htmlType="submit" className="login-form-button">
           Log in
         </Button>
       </Form>
@@ -80,6 +80,7 @@ class LoginForm extends Component {
 
 LoginForm.propTypes = {
   login: PropTypes.func.isRequired,
+  status: PropTypes.string.isRequired,
   message: PropTypes.oneOf([
     PropTypes.string,
     PropTypes.object,

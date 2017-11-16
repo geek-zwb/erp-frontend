@@ -92,12 +92,12 @@ class Login extends Component {
     this.props.login(credentials);
   }
 
- /* componentWillReceiveProps(nextProps) {
-    if (nextProps.isAuthenticated) this.props.history.replace('/');
-  }*/
+  /* componentWillReceiveProps(nextProps) {
+   if (nextProps.isAuthenticated) this.props.history.replace('/');
+   }*/
 
   render() {
-    if (this.props.isAuthenticated) return <Redirect to="/" />;
+    if (this.props.isAuthenticated) return <Redirect to="/"/>;
 
     return (
       <LoginPage>
@@ -109,7 +109,11 @@ class Login extends Component {
             ENSUN ERP
           </LoginHeader>
           <LoginContent>
-            <LoginForm login={this.login} message={this.props.message} />
+            <LoginForm
+              login={this.login}
+              status={this.props.status}
+              message={this.props.message}
+            />
             <p style={{marginTop: 60, paddingTop: 20, textAlign: 'center', borderTop: '1px solid #ccc'}}>
               © rbac All Right Reserved 2017
             </p>
@@ -122,13 +126,17 @@ class Login extends Component {
 
 Login.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
-  message: PropTypes.string || PropTypes.object
+  message: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ])
 };
 
 function mapStateToProps(state) {
   return {
     isAuthenticated: state.getIn(['auth', 'isAuthenticated']),
-    message: state.getIn(['auth', 'message'])
+    message: state.getIn(['auth', 'message']),
+    status: state.getIn(['auth', 'status']),
   };
 }
 
