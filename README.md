@@ -18,7 +18,6 @@
 
 ## 开发流程与规范
 严格遵循[webpack-init](https://github.com/geek-zwb/react-init)中的原则。
-yarn remove babel-polyfill babel-runtime es6-promise fetch-ie8 fingerprintjs2 js-cookie lodash object-assign store ua-parser-js uuid
 ## Folder Structure
 
 ```
