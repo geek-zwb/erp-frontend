@@ -23,7 +23,7 @@ const rootReducer = combineReducers({
   router: routerReducer
 });
 
-const store = createStore(rootReducer, compose(applyMiddleware(...middlewares), window.devToolsExtension && window.devToolsExtension()));
+const store = createStore(rootReducer, compose(applyMiddleware(...middlewares), window.devToolsExtension ? window.devToolsExtension() : f => f));
 
 sagaMiddleware.run(saga);
 

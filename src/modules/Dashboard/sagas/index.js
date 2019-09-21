@@ -28,7 +28,6 @@ function getData(data) {
  */
 function* dashboardRequest(data) {
   const response = yield call(getData, data);
-  console.log('response: ', response);
   // 处理 response 逻辑， 如状态码， 数据格式验证等等。
   // and then put action, 从而调用对应的reducer， 改变store🌲
   // 需要注意的是， put之前， 获取数据要转成immutable

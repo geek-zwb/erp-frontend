@@ -12,10 +12,12 @@
 - immutable
 - redux-immutable
 - styled-components
+- antd
+- store
+- axios
 
 ## 开发流程与规范
 严格遵循[webpack-init](https://github.com/geek-zwb/react-init)中的原则。
-
 ## Folder Structure
 
 ```
