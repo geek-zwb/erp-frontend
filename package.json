@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "antd": "^2.13.6",
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "history": "^4.6.3",
     "immutable": "^3.8.1",
     "moment": "^2.19.1",
