@@ -52,7 +52,7 @@
     "axios": "^0.16.2",
     "history": "^4.6.3",
     "immutable": "^3.8.1",
-    "moment": "^2.19.1",
+    "moment": "^2.29.4",
     "promise": "7.1.1",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
